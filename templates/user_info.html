@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}Funds - {{ user.username }}{% endblock %}
+
+{% block page_content %}
+<div class="page-header">
+    <img class="img-rounded profile-thumbnail" src="{{ url_for('static', filename='default.jpg') }}" width="128px" height="128px">
+    <div class="profile-header">
+        <h1>{{ user.username }}</h1>
+        <p>Mail to {{ user.username }}: <a href="http://mail.nafmii.org.cn/">{{ user.email }}</a></p>
+        <p>
+            {{ user.username }} from <a href="https://map.baidu.com/?q={{ user.location }}">{{ user.location }}</a>
+        </p>
+        <h3>{{ user.about_me }}</h3>
+
+        <p>
+            {% if user == current_user %}
+            <a class="btn btn-default" href="{{ url_for('.edit_profile') }}">Edit Profile</a>
+            {% endif %}
+            {% if current_user.is_administrator() %}
+            <a class="btn btn-danger" href="{{ url_for('.edit_profile_admin', user_id=user.id) }}">Edit Profile (Admin)</a>
+            {% endif %}
+        </p>
+    </div>
+</div>
+{% endblock %}
