@@ -12,8 +12,8 @@ class Fund(db.Model):
     wind_code = db.Column(db.String(64), unique=True)
     # 基金简称
     sec_name = db.Column(db.String(64))
-    # 基金类型
-    fund_type = db.Column(db.String(64))
+    # 投资类型（一级分类）
+    fund_firstinvesttype = db.Column(db.String(64))
     # 投资类型（二级分类）
     fund_investtype = db.Column(db.String(64))
     # 跟踪指数代码

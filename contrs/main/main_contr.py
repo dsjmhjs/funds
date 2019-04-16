@@ -4,7 +4,7 @@ from contrs.main import main
 from config import db
 from models.users import User
 from models.roles import Role
-from models.mydb import mydb_init, mydb_set_users, mydb_set_funds
+from models.mydb import mydb_init, mydb_set_users, mydb_set_funds, mydb_set_trackindexes
 from contrs.main.forms import EditProfileForm, EditProfileAdminForm
 from flask_login import login_required, current_user
 from models.roles import Perm
@@ -33,6 +33,13 @@ def set_users():
 @main.route('/set-funds')
 def set_funds():
     mydb_set_funds()
+    print 'Finished.'
+    return render_template('index.html')
+
+
+@main.route('/set-tis')
+def set_trackindexes():
+    mydb_set_trackindexes()
     print 'Finished.'
     return render_template('index.html')
 

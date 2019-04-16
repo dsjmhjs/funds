@@ -89,9 +89,12 @@ def mydb_set_funds():
     # 获取基金详情
     # [[today...],[wind_code...],[sec_name...]...]
     funds_detail = [[], [], [], [], [], [], []]
+    count = 0
     for fs in funds_str:
+        print count
+        count += 100
         funds_detail_part = w.wss(fs,
-                                  "sec_name,fund_type,fund_investtype,fund_trackindexcode,fund_fundscale,fund_mgrcomp,fund_fundmanager").Data
+                                  "sec_name,fund_firstinvesttype,fund_investtype,fund_trackindexcode,fund_fundscale,fund_mgrcomp,fund_fundmanager").Data
         for i in range(7):
             funds_detail[i] = funds_detail[i] + funds_detail_part[i]
 
@@ -123,7 +126,7 @@ def mydb_set_funds():
             date=today,
             wind_code=funds_code[i],
             sec_name=funds_detail[0][i],
-            fund_type=funds_detail[1][i],
+            fund_firstinvesttype=funds_detail[1][i],
             fund_investtype=funds_detail[2][i],
             fund_trackindexcode=funds_detail[3][i],
             fund_fundscale=funds_detail[4][i],
@@ -140,5 +143,31 @@ def mydb_set_trackindexes():
     for ti in trackindexes:
         db.session.delete(ti)
     db.session.commit()
+    # 从funds表中获取跟踪指数信息
+    funds = Fund.query.filter(Fund.fund_trackindexcode != None).all()
+    fund_trackindexcodes = set()
+    for f in funds:
+        fund_trackindexcodes.add(f.fund_trackindexcode)
+    fund_trackindexcodes = list(fund_trackindexcodes)
+    # 获取每一只跟踪指数的历史数据
     today = datetime.now().strftime("%Y-%m-%d")
+    # w.wsd("H30165.CSI", "pe_ttm", "2019-03-17", "2019-04-15", "")
     w.start()
+    count = 0
+    for fti in fund_trackindexcodes:
+        print count, fti
+        count += 1
+        detail = w.wsd(fti, "sec_name,pe_ttm,pb_lf", "2000-01-01", today, "")
+        times = detail.Times
+        data = detail.Data
+        for i in range(0, len(times)):
+            trackindex = TrackIndex(
+                date=times[i],
+                wind_code=fti,
+                sec_name=data[0][i],
+                pe_ttm=data[1][i],
+                pb_lf=data[2][i]
+            )
+            db.session.add(trackindex)
+    db.session.commit()
+    w.stop()
