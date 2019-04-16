@@ -3,17 +3,16 @@
 from config import db
 from models.users import User
 from models.roles import Role
-from models.funds import Fund
+from models.funds import Fund, TrackIndex
 from faker import Faker
 from sqlalchemy.exc import IntegrityError
 # wind
 from WindPy import *
 from datetime import datetime
-from threading import Lock
-import threadpool
 
-count = 0
-lock = Lock()
+
+# from threading import Lock
+# import threadpool
 
 
 def mydb_init():
@@ -73,6 +72,7 @@ def mydb_set_funds():
                         "date=" + today + ";sectorid=a201010700000000;field=wind_code").Data
     # 基金列表
     funds_code = funds_data[0]
+    # 因基金数量较多，windpy接口参数不支持过长字符串，故分割为长度为100的子串
     # 拼接成的以,分隔的字符串，每100个一组
     funds_str = []
     p = 0
@@ -132,3 +132,13 @@ def mydb_set_funds():
         )
         db.session.add(fund)
     db.session.commit()
+
+
+def mydb_set_trackindexes():
+    # 删除旧数据
+    trackindexes = TrackIndex.query.all()
+    for ti in trackindexes:
+        db.session.delete(ti)
+    db.session.commit()
+    today = datetime.now().strftime("%Y-%m-%d")
+    w.start()

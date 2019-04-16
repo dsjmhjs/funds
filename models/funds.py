@@ -24,3 +24,18 @@ class Fund(db.Model):
     fund_mgrcomp = db.Column(db.String(64))
     # 基金经理
     fund_fundmanager = db.Column(db.String(64))
+
+
+class TrackIndex(db.Model):
+    __tablename__ = 'trackindexes'
+    id = db.Column(db.Integer, primary_key=True)
+    # 获取日期
+    date = db.Column(db.String(64))
+    # wind代码
+    wind_code = db.Column(db.String(64), unique=True)
+    # 指数简称
+    sec_name = db.Column(db.String(64))
+    # 市盈率
+    pe_ttm = db.Column(db.String(64))
+    # 市净率
+    pb_lf = db.Column(db.String(64))
