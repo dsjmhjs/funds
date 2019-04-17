@@ -11,6 +11,9 @@ from WindPy import *
 from datetime import datetime
 # 上下文
 from start import create_app
+# 请求处理
+import requests
+import json
 
 
 # from threading import Lock
@@ -139,40 +142,88 @@ def mydb_set_funds():
     db.session.commit()
 
 
+# # 从wind获取跟踪指数历史数据，但因条数太多而受限
+# def mydb_set_trackindexes():
+#     # 删除旧数据
+#     trackindexes = TrackIndex.query.all()
+#     for ti in trackindexes:
+#         db.session.delete(ti)
+#     db.session.commit()
+#     # 从funds表中获取跟踪指数信息
+#     funds = Fund.query.filter(Fund.fund_trackindexcode != None).all()
+#     fund_trackindexcodes = set()
+#     for f in funds:
+#         fund_trackindexcodes.add(f.fund_trackindexcode)
+#     fund_trackindexcodes = list(fund_trackindexcodes)
+#     # 获取每一只跟踪指数的历史数据
+#     today = datetime.now().strftime("%Y-%m-%d")
+#     w.start()
+#     count = 0
+#     for fti in fund_trackindexcodes:
+#         print count, fti
+#         count += 1
+#         detail = w.wsd(fti, "sec_name,pe_ttm,pb_lf", "2000-01-01", today, "")
+#         times = detail.Times
+#         data = detail.Data
+#         for i in range(0, len(times)):
+#             trackindex = TrackIndex(
+#                 date=times[i],
+#                 wind_code=fti,
+#                 sec_name=data[0][i],
+#                 pe_ttm=data[1][i],
+#                 pb_lf=data[2][i]
+#             )
+#             db.session.add(trackindex)
+#     db.session.commit()
+#     w.stop()
+
+
+# 通过理杏仁数据接口导出
 def mydb_set_trackindexes():
-    # 删除旧数据
-    trackindexes = TrackIndex.query.all()
-    for ti in trackindexes:
-        db.session.delete(ti)
-    db.session.commit()
-    # 从funds表中获取跟踪指数信息
-    funds = Fund.query.filter(Fund.fund_trackindexcode != None).all()
-    fund_trackindexcodes = set()
-    for f in funds:
-        fund_trackindexcodes.add(f.fund_trackindexcode)
-    fund_trackindexcodes = list(fund_trackindexcodes)
-    # 获取每一只跟踪指数的历史数据
-    today = datetime.now().strftime("%Y-%m-%d")
-    # w.wsd("H30165.CSI", "pe_ttm", "2019-03-17", "2019-04-15", "")
-    w.start()
-    count = 0
-    for fti in fund_trackindexcodes:
-        print count, fti
-        count += 1
-        detail = w.wsd(fti, "sec_name,pe_ttm,pb_lf", "2000-01-01", today, "")
-        times = detail.Times
-        data = detail.Data
-        for i in range(0, len(times)):
-            trackindex = TrackIndex(
-                date=times[i],
-                wind_code=fti,
-                sec_name=data[0][i],
-                pe_ttm=data[1][i],
-                pb_lf=data[2][i]
-            )
-            db.session.add(trackindex)
-    db.session.commit()
-    w.stop()
+    # token
+    token = "d60faad6-7d91-4d02-a589-22d0cc937261"
+    pass
+
+
+# 获取特定指数基本面信息
+def get_indice_fundamental(token, stock_codes, start_date, end_date):
+    url = "https://open.lixinger.com/api/a/indice/fundamental"
+    headers = {"Content-Type": "application/json"}
+    param = {
+        "token": token,
+        "startDate": start_date,
+        "endDate": end_date,
+        "stockCodes": [
+            stock_codes
+        ],
+        "metrics": [
+            # 从历史以来算出的分位点
+            "pe_ttm.f_s.weightedAvg",
+            # 加权平均滚动市盈率
+            "pe_ttm.weightedAvg",
+            # 加权平均市净率
+            "pb.weightedAvg"
+        ]
+    }
+    r = requests.session().post(url, headers=headers, json=param)
+    r_dict = json.loads(r.text)
+    return r_dict
+
+
+# 获取指数成立日期
+def get_indice_publishdate(token, stock_codes):
+    url = "https://open.lixinger.com/api/a/indice"
+    headers = {"Content-Type": "application/json"}
+    param = {
+        "token": token,
+        "stockCodes": [
+            stock_codes
+        ]
+    }
+    r = requests.session().post(url, headers=headers, json=param)
+    r_dict = json.loads(r.text)
+    publishdate = r_dict['data'][0]['publishDate'][:10]
+    return publishdate
 
 
 if __name__ == '__main__':
