@@ -9,6 +9,8 @@ from sqlalchemy.exc import IntegrityError
 # wind
 from WindPy import *
 from datetime import datetime
+# 上下文
+from start import create_app
 
 
 # from threading import Lock
@@ -171,3 +173,8 @@ def mydb_set_trackindexes():
             db.session.add(trackindex)
     db.session.commit()
     w.stop()
+
+
+if __name__ == '__main__':
+    with create_app('default').app_context():
+        mydb_set_trackindexes()
