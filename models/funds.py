@@ -26,16 +26,22 @@ class Fund(db.Model):
     fund_fundmanager = db.Column(db.String(64))
 
 
-class TrackIndex(db.Model):
-    __tablename__ = 'trackindexes'
+class LXRIndice(db.Model):
+    __tablename__ = 'lxrindices'
     id = db.Column(db.Integer, primary_key=True)
-    # 获取日期
+    # 日期
     date = db.Column(db.String(64))
-    # wind代码
-    wind_code = db.Column(db.String(64), unique=True)
+    # 指数代码
+    stock_code = db.Column(db.String(64), unique=True)
     # 指数简称
-    sec_name = db.Column(db.String(64))
+    cn_name = db.Column(db.String(64))
     # 市盈率
     pe_ttm = db.Column(db.String(64))
     # 市净率
-    pb_lf = db.Column(db.String(64))
+    pb = db.Column(db.String(64))
+    # 市销率
+    ps_ttm = db.Column(db.String(64))
+    # 收盘点位
+    cp = db.Column(db.String(64))
+    # 市值
+    mc = db.Column(db.String(64))

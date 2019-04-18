@@ -3,7 +3,7 @@
 from config import db
 from models.users import User
 from models.roles import Role
-from models.funds import Fund, TrackIndex
+from models.funds import Fund
 from faker import Faker
 from sqlalchemy.exc import IntegrityError
 # wind
@@ -21,7 +21,6 @@ import json
 
 
 def mydb_init():
-    db.drop_all()
     db.create_all()
 
 
@@ -178,7 +177,7 @@ def mydb_set_funds():
 #     w.stop()
 
 
-# 通过理杏仁数据接口导出
+# 通过lxr数据接口导出
 def mydb_set_trackindexes():
     # token
     token = "d60faad6-7d91-4d02-a589-22d0cc937261"
@@ -186,7 +185,7 @@ def mydb_set_trackindexes():
 
 
 # 获取特定指数基本面信息
-def get_indice_fundamental(token, stock_codes, start_date, end_date):
+def get_indice_fundamental(token, stock_code, start_date, end_date):
     url = "https://open.lixinger.com/api/a/indice/fundamental"
     headers = {"Content-Type": "application/json"}
     param = {
@@ -194,38 +193,120 @@ def get_indice_fundamental(token, stock_codes, start_date, end_date):
         "startDate": start_date,
         "endDate": end_date,
         "stockCodes": [
-            stock_codes
+            stock_code
         ],
         "metrics": [
-            # 从历史以来算出的分位点
-            "pe_ttm.f_s.weightedAvg",
             # 加权平均滚动市盈率
             "pe_ttm.weightedAvg",
             # 加权平均市净率
-            "pb.weightedAvg"
+            "pb.weightedAvg",
+            # 加权平均滚动市销率
+            "ps_ttm.weightedAvg",
+            # 收盘点位
+            "cp",
+            # 市值
+            "mc"
         ]
     }
     r = requests.session().post(url, headers=headers, json=param)
     r_dict = json.loads(r.text)
-    return r_dict
+    data_dict_list = r_dict['data']
+    data_list = []
+    for data_dict in data_dict_list:
+        dt = data_dict['date'][:10]
+        pe_ttm = data_dict['pe_ttm']['weightedAvg']
+        pb = data_dict['pb']['weightedAvg']
+        ps_ttm = data_dict['ps_ttm']['weightedAvg']
+        cp = data_dict['cp']
+        mc = data_dict['mc']
+        data_list.append([dt, pe_ttm, pb, ps_ttm, cp, mc])
+    return data_list
+# 结构如下
+# {
+#   "code": 0,
+#   "msg": "success",
+#   "data": [
+#     {
+#       "date": "2019-04-04T00:00:00+08:00",
+#       "mc": 21014173498077.305,
+#       "pe_ttm": {
+#         "weightedAvg": 10.458130462139
+#       },
+#       "pb": {
+#         "weightedAvg": 1.2796918003351128
+#       },
+#       "ps_ttm": {
+#         "weightedAvg": 1.1587629027286634
+#       },
+#       "cp": 2951.98,
+#       "stockCode": "000016"
+#     },
+#     {
+#       "date": "2019-04-03T00:00:00+08:00",
+#       "mc": 20740096666326.105,
+#       "pe_ttm": {
+#         "weightedAvg": 10.32173055740965
+#       },
+#       "pb": {
+#         "weightedAvg": 1.2630014520667916
+#       },
+#       "ps_ttm": {
+#         "weightedAvg": 1.1436497665798755
+#       },
+#       "cp": 2920,
+#       "stockCode": "000016"
+#     }
+#   ]
+# }
 
 
-# 获取指数成立日期
-def get_indice_publishdate(token, stock_codes):
+# 获取lxr全部指数代码及成立日期
+def get_indice_publishdate(token):
     url = "https://open.lixinger.com/api/a/indice"
     headers = {"Content-Type": "application/json"}
     param = {
-        "token": token,
-        "stockCodes": [
-            stock_codes
-        ]
+        "token": token
     }
     r = requests.session().post(url, headers=headers, json=param)
     r_dict = json.loads(r.text)
-    publishdate = r_dict['data'][0]['publishDate'][:10]
-    return publishdate
+    data_dict_list = r_dict['data']
+    data_list = []
+    for data_dict in data_dict_list:
+        stock_code = data_dict['stockCode']
+        cn_name = data_dict['cnName']
+        publish_date = data_dict['publishDate'][:10]
+        data_list.append([stock_code, cn_name, publish_date])
+    return data_list
+# 结构如下
+# {
+#   "code": 0,
+#   "msg": "success",
+#   "data": [
+#     {
+#       "stockCode": "399001",
+#       "cnName": "深证成指",
+#       "source": "sz",
+#       "areaCode": "cn",
+#       "market": "a",
+#       "publishDate": "1994-12-31T16:00:00.000Z"
+#     },
+#     {
+#       "stockCode": "399005",
+#       "cnName": "中小板指",
+#       "source": "sz",
+#       "areaCode": "cn",
+#       "market": "a",
+#       "publishDate": "2006-01-23T16:00:00.000Z"
+#     }
+#   ]
+# }
 
 
 if __name__ == '__main__':
     with create_app('default').app_context():
-        mydb_set_trackindexes()
+        pass
+        # token = "d60faad6-7d91-4d02-a589-22d0cc937261"
+        # data_dict = get_indice_publishdate(token)
+        # print len(data_dict.keys())
+        # for k in data_dict.keys():
+        #     print k, data_dict[k]
