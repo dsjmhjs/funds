@@ -32,7 +32,7 @@ class LXRIndice(db.Model):
     # 日期
     date = db.Column(db.String(64))
     # 指数代码
-    stock_code = db.Column(db.String(64), unique=True)
+    stock_code = db.Column(db.String(64))
     # 指数简称
     cn_name = db.Column(db.String(64))
     # 市盈率

@@ -3,7 +3,7 @@
 from config import db
 from models.users import User
 from models.roles import Role
-from models.funds import Fund
+from models.funds import Fund, LXRIndice
 from faker import Faker
 from sqlalchemy.exc import IntegrityError
 # wind
@@ -14,10 +14,13 @@ from start import create_app
 # 请求处理
 import requests
 import json
-
+import time
 
 # from threading import Lock
 # import threadpool
+
+
+today = datetime.now().strftime("%Y-%m-%d")
 
 
 def mydb_init():
@@ -68,7 +71,6 @@ def mydb_set_funds():
     for f in funds:
         db.session.delete(f)
     db.session.commit()
-    today = datetime.now().strftime("%Y-%m-%d")
     w.start()
     # 获取全部基金
     # [[wind_code]]
@@ -178,10 +180,42 @@ def mydb_set_funds():
 
 
 # 通过lxr数据接口导出
-def mydb_set_trackindexes():
+def mydb_set_lxrindices():
     # token
     token = "d60faad6-7d91-4d02-a589-22d0cc937261"
-    pass
+    # 删除旧数据
+    lxrindices = LXRIndice.query.all()
+    for lxrindice in lxrindices:
+        db.session.delete(lxrindice)
+    db.session.commit()
+    # 得到全部指数代码及成立时间
+    indices = get_indice_publishdate(token)
+    print '共', len(indices), '个指数'
+    # 根据indices获取每个指数的历史数据
+    count = 0
+    for indice in indices:
+        count += 1
+        print '第', count, '个'
+        if count % 50 == 0:
+            time.sleep(5)
+        stock_code = indice[0]
+        cn_name = indice[1]
+        publish_date = indice[2]
+        data_list = get_indice_fundamental(token, stock_code, publish_date, today)
+        for data in data_list:
+            lxrindice = LXRIndice(
+                date=data[0],
+                stock_code=stock_code,
+                cn_name=cn_name,
+                pe_ttm=data[1],
+                pb=data[2],
+                ps_ttm=data[3],
+                cp=data[4],
+                mc=data[5]
+            )
+            db.session.add(lxrindice)
+        db.session.commit()
+    print 'finished.'
 
 
 # 获取特定指数基本面信息
@@ -208,19 +242,42 @@ def get_indice_fundamental(token, stock_code, start_date, end_date):
             "mc"
         ]
     }
-    r = requests.session().post(url, headers=headers, json=param)
+    requests.DEFAULT_RETRIES = 5
+    s = requests.session()
+    s.keep_alive = False
+    r = s.post(url, headers=headers, json=param)
     r_dict = json.loads(r.text)
     data_dict_list = r_dict['data']
     data_list = []
     for data_dict in data_dict_list:
-        dt = data_dict['date'][:10]
-        pe_ttm = data_dict['pe_ttm']['weightedAvg']
-        pb = data_dict['pb']['weightedAvg']
-        ps_ttm = data_dict['ps_ttm']['weightedAvg']
-        cp = data_dict['cp']
-        mc = data_dict['mc']
+        if 'date' in data_dict:
+            dt = data_dict['date'][:10]
+        else:
+            dt = '0000-00-00'
+        if 'pe_ttm' in data_dict and 'weightedAvg' in data_dict['pe_ttm']:
+            pe_ttm = data_dict['pe_ttm']['weightedAvg']
+        else:
+            pe_ttm = -1
+        if 'pb' in data_dict and 'weightedAvg' in data_dict['pb']:
+            pb = data_dict['pb']['weightedAvg']
+        else:
+            pb = -1
+        if 'ps_ttm' in data_dict and 'weightedAvg' in data_dict['ps_ttm']:
+            ps_ttm = data_dict['ps_ttm']['weightedAvg']
+        else:
+            ps_ttm = -1
+        if 'cp' in data_dict:
+            cp = data_dict['cp']
+        else:
+            cp = -1
+        if 'mc' in data_dict:
+            mc = data_dict['mc']
+        else:
+            mc = -1
         data_list.append([dt, pe_ttm, pb, ps_ttm, cp, mc])
     return data_list
+
+
 # 结构如下
 # {
 #   "code": 0,
@@ -267,7 +324,10 @@ def get_indice_publishdate(token):
     param = {
         "token": token
     }
-    r = requests.session().post(url, headers=headers, json=param)
+    requests.DEFAULT_RETRIES = 5
+    s = requests.session()
+    s.keep_alive = False
+    r = s.post(url, headers=headers, json=param)
     r_dict = json.loads(r.text)
     data_dict_list = r_dict['data']
     data_list = []
@@ -277,6 +337,8 @@ def get_indice_publishdate(token):
         publish_date = data_dict['publishDate'][:10]
         data_list.append([stock_code, cn_name, publish_date])
     return data_list
+
+
 # 结构如下
 # {
 #   "code": 0,
@@ -304,9 +366,5 @@ def get_indice_publishdate(token):
 
 if __name__ == '__main__':
     with create_app('default').app_context():
-        pass
-        # token = "d60faad6-7d91-4d02-a589-22d0cc937261"
-        # data_dict = get_indice_publishdate(token)
-        # print len(data_dict.keys())
-        # for k in data_dict.keys():
-        #     print k, data_dict[k]
+        # mydb_init()
+        mydb_set_lxrindices()
