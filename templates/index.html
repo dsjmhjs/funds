@@ -18,4 +18,10 @@
     {% endif %}
 </div>
 #}
+{% for i in indices %}
+<tr>
+    <td>{{ i.stock_code }}</td>
+    <td>{{ i.cn_name }}</td>
+</tr>
+{% endfor %}
 {% endblock %}

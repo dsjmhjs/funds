@@ -4,6 +4,7 @@ from contrs.main import main
 from config import db
 from models.users import User
 from models.roles import Role
+from models.funds import Fund, LXRIndice
 from models.mydb import mydb_init, mydb_set_users, mydb_set_funds, mydb_set_lxrindices
 from contrs.main.forms import EditProfileForm, EditProfileAdminForm
 from flask_login import login_required, current_user
@@ -13,7 +14,8 @@ from contrs.decorators import permission_required, admin_required
 
 @main.route('/', methods=['GET', 'POST'])
 def index():
-    return render_template('index.html')
+    indices = LXRIndice.query.limit(10).all()
+    return render_template('index.html', indices=indices)
 
 
 @main.route('/init')
