@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from flask import render_template, redirect, url_for, flash
+from flask import render_template, redirect, url_for, flash, request
 from contrs.main import main
 from config import db
 from models.users import User
@@ -14,8 +14,10 @@ from contrs.decorators import permission_required, admin_required
 
 @main.route('/', methods=['GET', 'POST'])
 def index():
-    indices = LXRIndice.query.limit(10).all()
-    return render_template('index.html', indices=indices)
+    page = request.args.get('page', 1, type=int)
+    pagination = Fund.query.order_by(Fund.id.desc()).paginate(page, 10, False)
+    funds = pagination.items
+    return render_template('index.html', pagination=pagination, funds=funds)
 
 
 @main.route('/init')

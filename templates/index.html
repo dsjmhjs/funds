@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
+{% import "_macros.html" as macros %}
 
 {% block title %}Funds{% endblock %}
 
@@ -18,10 +19,16 @@
     {% endif %}
 </div>
 #}
-{% for i in indices %}
-<tr>
-    <td>{{ i.stock_code }}</td>
-    <td>{{ i.cn_name }}</td>
-</tr>
+{% for fund in funds %}
+<li class="fund">
+    <div>
+        {{ fund.wind_code }},{{ fund.sec_name }}
+    </div>
+</li>
 {% endfor %}
+{% if pagination %}
+<div class="pagination">
+    {{ macros.pagination_widget(pagination, '.index') }}
+</div>
+{% endif %}
 {% endblock %}
