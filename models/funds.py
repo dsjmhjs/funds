@@ -45,3 +45,14 @@ class LXRIndice(db.Model):
     cp = db.Column(db.String(64))
     # 市值
     mc = db.Column(db.String(64))
+
+
+# track_code和indice_code的映射表
+class TC2IC(db.Model):
+    __tablename__ = 'tc2ics'
+    id = db.Column(db.Integer, primary_key=True)
+    # wind_code
+    track_code = db.Column(db.String(64))
+    # lxr_code
+    indice_code = db.Column(db.String(64))
+    cn_name = db.Column(db.String(64))

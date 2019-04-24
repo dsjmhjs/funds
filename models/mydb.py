@@ -3,7 +3,7 @@
 from config import db
 from models.users import User
 from models.roles import Role
-from models.funds import Fund, LXRIndice
+from models.funds import Fund, LXRIndice, TC2IC
 from faker import Faker
 from sqlalchemy.exc import IntegrityError
 # wind
@@ -364,7 +364,36 @@ def get_indice_publishdate(token):
 # }
 
 
+def mydb_set_tc2ics():
+    # 删除旧数据
+    tc2ics = TC2IC.query.all()
+    for tc2ic in tc2ics:
+        db.session.delete(tc2ic)
+    db.session.commit()
+    funds_filters = {
+        Fund.fund_investtype == u'被动指数型基金',
+        Fund.fund_trackindexcode != ''
+    }
+    ft = Fund.fund_trackindexcode
+    tcs = Fund.query.filter(*funds_filters).with_entities(ft).group_by(ft).all()
+    tcs_dict = {}
+    for tc in tcs:
+        tcs_dict.setdefault(tc[0].split('.')[0], tc[0])
+    sc = LXRIndice.stock_code
+    cn = LXRIndice.cn_name
+    ics = LXRIndice.query.with_entities(sc, cn).group_by(sc, cn).all()
+    for ic in ics:
+        if ic[0] in tcs_dict:
+            tc2ic = TC2IC(
+                track_code=tcs_dict[ic[0]],
+                indice_code=ic[0],
+                cn_name=ic[1]
+            )
+            db.session.add(tc2ic)
+    db.session.commit()
+
+
 if __name__ == '__main__':
     with create_app('default').app_context():
         # mydb_init()
-        mydb_set_lxrindices()
+        mydb_set_tc2ics()
