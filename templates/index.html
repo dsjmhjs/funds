@@ -19,13 +19,26 @@
     {% endif %}
 </div>
 #}
-{% for fund in funds %}
-<li class="fund">
-    <div>
-        {{ fund.wind_code }},{{ fund.sec_name }}
-    </div>
-</li>
-{% endfor %}
+<table class="table table-hover table-condensed">
+    <thead>
+    <tr class="active">
+        <th>#</th>
+        <th>万得代码</th>
+        <th>lxr代码</th>
+        <th>指数简称</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for tc2ic in tc2ics %}
+    <tr>
+        <td>{{ tc2ic.id }}</td>
+        <td>{{ tc2ic.track_code }}</td>
+        <td>{{ tc2ic.indice_code }}</td>
+        <td>{{ tc2ic.cn_name }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
 {% if pagination %}
 <div class="pagination">
     {{ macros.pagination_widget(pagination, '.index') }}

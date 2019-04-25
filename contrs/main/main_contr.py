@@ -4,7 +4,7 @@ from contrs.main import main
 from config import db
 from models.users import User
 from models.roles import Role
-from models.funds import Fund, LXRIndice
+from models.funds import Fund, LXRIndice, TC2IC
 from models.mydb import mydb_init, mydb_set_users, mydb_set_funds, mydb_set_lxrindices
 from contrs.main.forms import EditProfileForm, EditProfileAdminForm
 from flask_login import login_required, current_user
@@ -15,9 +15,9 @@ from contrs.decorators import permission_required, admin_required
 @main.route('/', methods=['GET', 'POST'])
 def index():
     page = request.args.get('page', 1, type=int)
-    pagination = Fund.query.order_by(Fund.id.desc()).paginate(page, 10, False)
-    funds = pagination.items
-    return render_template('index.html', pagination=pagination, funds=funds)
+    pagination = TC2IC.query.order_by(TC2IC.id).paginate(page, 10, False)
+    tc2ics = pagination.items
+    return render_template('index.html', pagination=pagination, tc2ics=tc2ics)
 
 
 @main.route('/init')
