@@ -375,13 +375,25 @@ def mydb_set_tc2ics():
         Fund.fund_trackindexcode != ''
     }
     ft = Fund.fund_trackindexcode
+    # 万得的跟踪代码查询结果
     tcs = Fund.query.filter(*funds_filters).with_entities(ft).group_by(ft).all()
+    # 万得跟踪代码带字母到不带字母的映射：{不带字母:带字母,...}
     tcs_dict = {}
     for tc in tcs:
         tcs_dict.setdefault(tc[0].split('.')[0], tc[0])
     sc = LXRIndice.stock_code
     cn = LXRIndice.cn_name
+    # 理杏仁指数代码查询结果
     ics = LXRIndice.query.with_entities(sc, cn).group_by(sc, cn).all()
+    # 带字母
+    track_code = []
+    # 不带字母
+    indice_code = []
+    # 指数简称
+    cn_name = []
+    max_pe_ttm = []
+    min_pe_ttm = []
+    latest_pe_ttm = []
     for ic in ics:
         if ic[0] in tcs_dict:
             tc2ic = TC2IC(
