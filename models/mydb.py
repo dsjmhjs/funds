@@ -391,9 +391,20 @@ def mydb_set_tc2ics():
     indice_code = []
     # 指数简称
     cn_name = []
-    max_pe_ttm = []
-    min_pe_ttm = []
+    # 当前值
     latest_pe_ttm = []
+    # 当前分位点
+    latest_per = []
+    # 最大值
+    max_pe_ttm = []
+    # 最小值
+    min_pe_ttm = []
+    # 中位值
+    mid_pe_ttm = []
+    # 危险值
+    risk_pe_ttm = []
+    # 机会值
+    chance_pe_ttm = []
     for ic in ics:
         if ic[0] in tcs_dict:
             tc2ic = TC2IC(
