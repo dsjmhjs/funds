@@ -418,5 +418,6 @@ def mydb_set_tc2ics():
 
 if __name__ == '__main__':
     with create_app('default').app_context():
+        pass
         # mydb_init()
-        mydb_set_tc2ics()
+        # mydb_set_tc2ics()
