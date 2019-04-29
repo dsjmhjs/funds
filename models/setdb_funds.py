@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from config import db
-from models.funds import Fund, LXRIndice, TC2IC
+from models.funds import Fund, L
 from faker import Faker
 from sqlalchemy.exc import IntegrityError
 # wind
