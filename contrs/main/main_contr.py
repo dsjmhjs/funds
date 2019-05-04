@@ -4,8 +4,7 @@ from contrs.main import main
 from config import db
 from models.users import User
 from models.roles import Role
-from models.funds import Fund, LXRIndice, TC2IC
-from models.mydb import mydb_init, mydb_set_users, mydb_set_funds, mydb_set_lxrindices
+from models.funds import Fund, TrackIndex
 from contrs.main.forms import EditProfileForm, EditProfileAdminForm
 from flask_login import login_required, current_user
 from models.roles import Perm
@@ -15,37 +14,9 @@ from contrs.decorators import permission_required, admin_required
 @main.route('/', methods=['GET', 'POST'])
 def index():
     page = request.args.get('page', 1, type=int)
-    pagination = TC2IC.query.order_by(TC2IC.id).paginate(page, 10, False)
-    tc2ics = pagination.items
-    return render_template('index.html', pagination=pagination, tc2ics=tc2ics)
-
-
-@main.route('/init')
-def init():
-    mydb_init()
-    print 'Finished.'
-    return render_template('index.html')
-
-
-@main.route('/set-users')
-def set_users():
-    mydb_set_users()
-    print 'Finished.'
-    return render_template('index.html')
-
-
-@main.route('/set-funds')
-def set_funds():
-    mydb_set_funds()
-    print 'Finished.'
-    return render_template('index.html')
-
-
-@main.route('/set-lxr')
-def set_lxrindices():
-    mydb_set_lxrindices()
-    print 'Finished.'
-    return render_template('index.html')
+    pagination = TrackIndex.query.order_by(TrackIndex.id).paginate(page, 10, False)
+    trackindexes = pagination.items
+    return render_template('index.html', pagination=pagination, tc2ics=trackindexes)
 
 
 @main.route('/admin')

@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from config import db
-from models.funds import Fund, L
-from faker import Faker
-from sqlalchemy.exc import IntegrityError
+from models.funds import Fund
 # wind
 from WindPy import *
 from datetime import datetime
@@ -47,8 +45,10 @@ def mydb_set_funds():
     for fs in funds_str:
         print count
         count += 100
-        funds_detail_part = w.wss(fs,
-                                  "sec_name,fund_firstinvesttype,fund_investtype,fund_trackindexcode,fund_fundscale,fund_mgrcomp,fund_fundmanager").Data
+        funds_detail_part = w.wss(
+            fs,
+            "sec_name,fund_firstinvesttype,fund_investtype,fund_trackindexcode,fund_fundscale,fund_mgrcomp,fund_fundmanager"
+        ).Data
         for i in range(7):
             funds_detail[i] = funds_detail[i] + funds_detail_part[i]
     w.stop()
@@ -67,42 +67,6 @@ def mydb_set_funds():
         )
         db.session.add(fund)
     db.session.commit()
-
-
-# 从wind获取跟踪指数历史数据，但因条数太多而受限
-def mydb_set_trackindexes():
-    # 删除旧数据
-    trackindexes = TrackIndex.query.all()
-    for ti in trackindexes:
-        db.session.delete(ti)
-    db.session.commit()
-    # 从funds表中获取跟踪指数信息
-    funds = Fund.query.filter(Fund.fund_trackindexcode != None).all()
-    fund_trackindexcodes = set()
-    for f in funds:
-        fund_trackindexcodes.add(f.fund_trackindexcode)
-    fund_trackindexcodes = list(fund_trackindexcodes)
-    # 获取每一只跟踪指数的历史数据
-    today = datetime.now().strftime("%Y-%m-%d")
-    w.start()
-    count = 0
-    for fti in fund_trackindexcodes:
-        print count, fti
-        count += 1
-        detail = w.wsd(fti, "sec_name,pe_ttm,pb_lf", "2000-01-01", today, "")
-        times = detail.Times
-        data = detail.Data
-        for i in range(0, len(times)):
-            trackindex = TrackIndex(
-                date=times[i],
-                wind_code=fti,
-                sec_name=data[0][i],
-                pe_ttm=data[1][i],
-                pb_lf=data[2][i]
-            )
-            db.session.add(trackindex)
-    db.session.commit()
-    w.stop()
 
 
 if __name__ == '__main__':
