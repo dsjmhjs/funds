@@ -22,19 +22,27 @@
 <table class="table table-hover table-condensed">
     <thead>
     <tr class="active">
-        <th>#</th>
-        <th>万得代码</th>
-        <th>lxr代码</th>
+        <th>#指数代码</th>
         <th>指数简称</th>
+        <th>收盘价</th>
+        <th>市盈率</th>
+        <th>分位点</th>
+        <th>市净率</th>
+        <th>市销率</th>
+        <th>更新日期</th>
     </tr>
     </thead>
     <tbody>
-    {% for tc2ic in tc2ics %}
+    {% for showindex in showindexes %}
     <tr>
-        <td>{{ tc2ic.id }}</td>
-        <td>{{ tc2ic.track_code }}</td>
-        <td>{{ tc2ic.indice_code }}</td>
-        <td>{{ tc2ic.cn_name }}</td>
+        <td>{{ showindex.fund_trackindexcode }}</td>
+        <td>{{ showindex.sec_name }}</td>
+        <td>{{ showindex.close }}</td>
+        <td>{{ showindex.pe_ttm }}</td>
+        <td class="danger">{{ showindex.quantile }}</td>
+        <td>{{ showindex.pb_lf }}</td>
+        <td>{{ showindex.ps_ttm }}</td>
+        <td>{{ showindex.date }}</td>
     </tr>
     {% endfor %}
     </tbody>

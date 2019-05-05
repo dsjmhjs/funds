@@ -4,7 +4,7 @@ from contrs.main import main
 from config import db
 from models.users import User
 from models.roles import Role
-from models.funds import Fund, TrackIndex
+from models.funds import Fund, TrackIndex, ShowIndex
 from contrs.main.forms import EditProfileForm, EditProfileAdminForm
 from flask_login import login_required, current_user
 from models.roles import Perm
@@ -14,9 +14,9 @@ from contrs.decorators import permission_required, admin_required
 @main.route('/', methods=['GET', 'POST'])
 def index():
     page = request.args.get('page', 1, type=int)
-    pagination = TrackIndex.query.order_by(TrackIndex.id).paginate(page, 10, False)
-    trackindexes = pagination.items
-    return render_template('index.html', pagination=pagination, tc2ics=trackindexes)
+    pagination = ShowIndex.query.order_by(ShowIndex.id).paginate(page, 10, False)
+    showindexes = pagination.items
+    return render_template('index.html', pagination=pagination, showindexes=showindexes)
 
 
 @main.route('/admin')

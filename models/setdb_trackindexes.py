@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from config import db
-from models.funds import Fund, TrackIndex
+from models.funds import Fund, TrackIndex, ShowIndex
 # wind
 from WindPy import *
 from datetime import datetime
@@ -47,6 +47,7 @@ def mydb_set_trackindexes():
     for fti in fund_trackindexcodes:
         print count, fti
         count += 1
+        # detail = w.wsd(fti, "sec_name,close,pe_ttm,pb_lf,ps_ttm", launchdate_dict[fti], today, "Period=W")
         # detail = w.wsd(fti, "sec_name,close,pe_ttm,pb_lf,ps_ttm", launchdate_dict[fti], "2018-12-31", "Period=W")
         # detail = w.wsd(fti, "sec_name,close,pe_ttm,pb_lf,ps_ttm", "2019-01-01", today, "")
         detail = w.wsd(fti, "sec_name,close,pe_ttm,pb_lf,ps_ttm", today, today, "")
@@ -67,7 +68,38 @@ def mydb_set_trackindexes():
     w.stop()
 
 
+def mydb_set_showindexes():
+    showindexes = ShowIndex.query.all()
+    for si in showindexes:
+        db.session.delete(si)
+    db.session.commit()
+    funds_filters = {
+        Fund.fund_investtype == u'被动指数型基金',
+        Fund.fund_trackindexcode != ''
+    }
+    columns = Fund.fund_trackindexcode
+    entities = Fund.query.filter(*funds_filters).with_entities(columns).group_by(columns).all()
+    fund_trackindexcodes = set()
+    for entity in entities:
+        fund_trackindexcodes.add(entity.fund_trackindexcode)
+    fund_trackindexcodes = list(fund_trackindexcodes)
+    for fti in fund_trackindexcodes:
+        fti_filters = {TrackIndex.fund_trackindexcode == fti}
+        entities = TrackIndex.query.filter(*fti_filters).order_by(TrackIndex.date.desc()).first()
+        showindex = ShowIndex(
+            fund_trackindexcode=entities.fund_trackindexcode,
+            sec_name=entities.sec_name,
+            close=entities.close,
+            pe_ttm=entities.pe_ttm,
+            quantile='75%',
+            pb_lf=entities.pb_lf,
+            ps_ttm=entities.ps_ttm,
+            date=entities.date
+        )
+        db.session.add(showindex)
+    db.session.commit()
+
+
 if __name__ == '__main__':
     with create_app('default').app_context():
-        # mydb_set_trackindexes()
-        pass
+        mydb_set_showindexes()

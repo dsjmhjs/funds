@@ -28,7 +28,6 @@ class Fund(db.Model):
 
 class TrackIndex(db.Model):
     __tablename__ = 'trackindexes'
-    # sec_name, close, pe_ttm, pb_lf, ps_ttm
     id = db.Column(db.Integer, primary_key=True)
     # 日期
     date = db.Column(db.String(64))
@@ -44,3 +43,24 @@ class TrackIndex(db.Model):
     pb_lf = db.Column(db.String(64))
     # 市销率
     ps_ttm = db.Column(db.String(64))
+
+
+class ShowIndex(db.Model):
+    __tablename__ = 'showindexes'
+    id = db.Column(db.Integer, primary_key=True)
+    # 指数代码
+    fund_trackindexcode = db.Column(db.String(64))
+    # 指数简称
+    sec_name = db.Column(db.String(64))
+    # 收盘价
+    close = db.Column(db.String(64))
+    # 市盈率
+    pe_ttm = db.Column(db.String(64))
+    # 分位点
+    quantile = db.Column(db.String(64))
+    # 市净率
+    pb_lf = db.Column(db.String(64))
+    # 市销率
+    ps_ttm = db.Column(db.String(64))
+    # 更新日期
+    date = db.Column(db.String(64))
