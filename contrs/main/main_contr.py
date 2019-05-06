@@ -14,9 +14,19 @@ from contrs.decorators import permission_required, admin_required
 @main.route('/', methods=['GET', 'POST'])
 def index():
     page = request.args.get('page', 1, type=int)
-    pagination = ShowIndex.query.order_by(ShowIndex.id).paginate(page, 10, False)
+    pagination = ShowIndex.query.order_by(ShowIndex.count.desc()).paginate(page, 10, False)
     showindexes = pagination.items
     return render_template('index.html', pagination=pagination, showindexes=showindexes)
+
+
+@main.route('/<fti>')
+def the_funds(fti):
+    fund_filters = {
+        Fund.fund_investtype == u'被动指数型基金',
+        Fund.fund_trackindexcode == fti
+    }
+    funds = Fund.query.filter(*fund_filters).all()
+    return render_template('the_funds.html', fti=fti, funds=funds)
 
 
 @main.route('/admin')

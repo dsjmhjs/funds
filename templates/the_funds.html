@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% import "_macros.html" as macros %}
+
+{% block title %}Funds{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+{% endblock %}
+
+{% block page_content %}
+<div class="col-md-8">
+    <h3><em>{{ fti }}</em>：</h3>
+</div>
+{#
+<div>
+    {% if current_user.can(Perm.W) %}
+    {{ wtf.quick_form(form) }}
+    {% endif %}
+</div>
+#}
+<table class="table table-hover table-condensed">
+    <thead>
+    <tr class="info">
+        <th>#基金代码</th>
+        <th>基金简称</th>
+        <th>投资类型（二级分类）</th>
+        <th>基金规模</th>
+        <th>基金管理人</th>
+        <th>基金经理</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for fund in funds %}
+    <tr>
+        <td>{{ fund.wind_code }}</td>
+        <td>{{ fund.sec_name }}</td>
+        <td>{{ fund.fund_investtype }}</td>
+        <td>{{ fund.fund_fundscale }}</td>
+        <td>{{ fund.fund_mgrcomp }}</td>
+        <td>{{ fund.fund_fundmanager }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

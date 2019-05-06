@@ -9,8 +9,9 @@
 {% endblock %}
 
 {% block page_content %}
-<div class="page-header">
-    <h1>Hello, {% if current_user.is_authenticated %}{{ current_user.username }}{% else %}Stranger{% endif %}!</h1>
+<div class="col-md-8">
+    <h1><em>Hello,</em> {% if current_user.is_authenticated %}{{ current_user.username }}{% else %}Stranger{% endif %}.
+    </h1>
 </div>
 {#
 <div>
@@ -21,7 +22,7 @@
 #}
 <table class="table table-hover table-condensed">
     <thead>
-    <tr class="active">
+    <tr class="info">
         <th>#指数代码</th>
         <th>指数简称</th>
         <th>收盘价</th>
@@ -30,6 +31,9 @@
         <th>市净率</th>
         <th>市销率</th>
         <th>更新日期</th>
+        <th>基金数量</th>
+        <th></th>
+        <th></th>
     </tr>
     </thead>
     <tbody>
@@ -43,6 +47,11 @@
         <td>{{ showindex.pb_lf }}</td>
         <td>{{ showindex.ps_ttm }}</td>
         <td>{{ showindex.date }}</td>
+        <td>{{ showindex.count }}</td>
+        <td><a class="btn btn-success btn-sm"
+               href="{{ url_for('main.the_funds', fti=showindex.fund_trackindexcode) }}"
+               role="button"><em>Funds</em></a></td>
+        <td><a class="btn btn-primary btn-sm" href="#" role="button"><em>Data</em></a></td>
     </tr>
     {% endfor %}
     </tbody>

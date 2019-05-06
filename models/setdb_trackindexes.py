@@ -86,6 +86,11 @@ def mydb_set_showindexes():
     for fti in fund_trackindexcodes:
         fti_filters = {TrackIndex.fund_trackindexcode == fti}
         entities = TrackIndex.query.filter(*fti_filters).order_by(TrackIndex.date.desc()).first()
+        count_filters = {
+            Fund.fund_investtype == u'被动指数型基金',
+            Fund.fund_trackindexcode == fti
+        }
+        count = Fund.query.filter(*count_filters).count()
         showindex = ShowIndex(
             fund_trackindexcode=entities.fund_trackindexcode,
             sec_name=entities.sec_name,
@@ -94,7 +99,8 @@ def mydb_set_showindexes():
             quantile='75%',
             pb_lf=entities.pb_lf,
             ps_ttm=entities.ps_ttm,
-            date=entities.date
+            date=entities.date,
+            count=count
         )
         db.session.add(showindex)
     db.session.commit()

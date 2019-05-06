@@ -64,3 +64,5 @@ class ShowIndex(db.Model):
     ps_ttm = db.Column(db.String(64))
     # 更新日期
     date = db.Column(db.String(64))
+    # 基金数
+    count = db.Column(db.Integer)
