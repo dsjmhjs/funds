@@ -19,7 +19,7 @@ class Fund(db.Model):
     # 跟踪指数代码
     fund_trackindexcode = db.Column(db.String(64))
     # 基金规模
-    fund_fundscale = db.Column(db.String(64))
+    fund_fundscale = db.Column(db.Float)
     # 基金管理人
     fund_mgrcomp = db.Column(db.String(64))
     # 基金经理
@@ -36,13 +36,13 @@ class TrackIndex(db.Model):
     # 指数简称
     sec_name = db.Column(db.String(64))
     # 收盘价
-    close = db.Column(db.String(64))
+    close = db.Column(db.Float)
     # 市盈率
-    pe_ttm = db.Column(db.String(64))
+    pe_ttm = db.Column(db.Float)
     # 市净率
-    pb_lf = db.Column(db.String(64))
+    pb_lf = db.Column(db.Float)
     # 市销率
-    ps_ttm = db.Column(db.String(64))
+    ps_ttm = db.Column(db.Float)
 
 
 class ShowIndex(db.Model):
@@ -53,15 +53,15 @@ class ShowIndex(db.Model):
     # 指数简称
     sec_name = db.Column(db.String(64))
     # 收盘价
-    close = db.Column(db.String(64))
+    close = db.Column(db.Float)
     # 市盈率
-    pe_ttm = db.Column(db.String(64))
+    pe_ttm = db.Column(db.Float)
     # 分位点
-    quantile = db.Column(db.String(64))
+    quantile = db.Column(db.Float)
     # 市净率
-    pb_lf = db.Column(db.String(64))
+    pb_lf = db.Column(db.Float)
     # 市销率
-    ps_ttm = db.Column(db.String(64))
+    ps_ttm = db.Column(db.Float)
     # 更新日期
     date = db.Column(db.String(64))
     # 基金数

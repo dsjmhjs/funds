@@ -25,7 +25,7 @@ def the_funds(fti):
         Fund.fund_investtype == u'被动指数型基金',
         Fund.fund_trackindexcode == fti
     }
-    funds = Fund.query.filter(*fund_filters).all()
+    funds = Fund.query.filter(*fund_filters).order_by(Fund.fund_fundscale.desc()).all()
     return render_template('the_funds.html', fti=fti, funds=funds)
 
 

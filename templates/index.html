@@ -10,7 +10,7 @@
 
 {% block page_content %}
 <div class="col-md-8">
-    <h1><em>Hello,</em> {% if current_user.is_authenticated %}{{ current_user.username }}{% else %}Stranger{% endif %}.
+    <h1><em>Hello, {% if current_user.is_authenticated %}{{ current_user.username }}{% else %}Stranger{% endif %}.</em>
     </h1>
 </div>
 {#
@@ -41,7 +41,7 @@
     <tr>
         <td>{{ showindex.fund_trackindexcode }}</td>
         <td>{{ showindex.sec_name }}</td>
-        <td>{{ showindex.close }}</td>
+        <td>{{ showindex.close | round(2) }}</td>
         <td>{{ showindex.pe_ttm }}</td>
         <td class="danger">{{ showindex.quantile }}</td>
         <td>{{ showindex.pb_lf }}</td>
