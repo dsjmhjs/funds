@@ -11,6 +11,7 @@ from models.roles import Perm
 from contrs.decorators import permission_required, admin_required
 # pyecharts
 from pyecharts import Line
+from pyecharts import Overlap
 
 REMOTE_HOST = "https://pyecharts.github.io/assets/js"
 
@@ -38,28 +39,42 @@ def the_data(fti):
     his_filters = {TrackIndex.fund_trackindexcode == fti}
     histories = TrackIndex.query.filter(*his_filters).order_by(TrackIndex.date).all()
     dates = []
+    closes = []
     pe_ttms = []
     for history in histories:
         dates.append(history.date[2:4] + '/' + history.date[5:7] + '/' + history.date[8:10])
+        closes.append('%.2f' % history.close)
         pe_ttms.append('%.2f' % history.pe_ttm)
     # 折线图
-    line = Line(
-        width=1200,
-        height=500
+    line_close = Line()
+    line_close.add(
+        'POINT',
+        dates,
+        closes,
+        area_opacity=0.1,
+        mark_point=[{"coord": [dates[-1], closes[-1]], "name": dates[-1]}],
+        mark_point_textcolor='black',
+        is_more_utils=True
     )
-    line.add(
+    line_pe = Line()
+    line_pe.add(
         'PE',
         dates,
         pe_ttms,
         area_opacity=0.1,
-        mark_line=["average"]
+        mark_point=[{"coord": [dates[-1], pe_ttms[-1]], "name": dates[-1]}],
+        mark_point_textcolor='black',
+        is_more_utils=True
     )
+    overlap = Overlap(width=1200, height=500)
+    overlap.add(line_pe)
+    overlap.add(line_close, yaxis_index=1, is_add_yaxis=True)
     return render_template(
         'the_data.html',
         fti=fti,
-        myechart=line.render_embed(),
+        myechart=overlap.render_embed(),
         host=REMOTE_HOST,
-        script_list=line.get_js_dependencies()
+        script_list=overlap.get_js_dependencies()
     )
 
 
