@@ -42,10 +42,10 @@
         <td>{{ showindex.fund_trackindexcode }}</td>
         <td>{{ showindex.sec_name }}</td>
         <td>{{ showindex.close | round(2) }}</td>
-        <td>{{ showindex.pe_ttm }}</td>
-        <td class="danger">{{ showindex.quantile }}</td>
-        <td>{{ showindex.pb_lf }}</td>
-        <td>{{ showindex.ps_ttm }}</td>
+        <td>{{ showindex.pe_ttm | round(2) }}</td>
+        <td class="danger">{{ showindex.quantile | round(2) }}</td>
+        <td>{{ showindex.pb_lf | round(2) }}</td>
+        <td>{{ showindex.ps_ttm | round(2) }}</td>
         <td>{{ showindex.date }}</td>
         <td>{{ showindex.count }}</td>
         <td><a class="btn btn-success btn-sm"

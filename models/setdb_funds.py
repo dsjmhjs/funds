@@ -61,12 +61,19 @@ def mydb_set_funds():
             fund_firstinvesttype=funds_detail[1][i],
             fund_investtype=funds_detail[2][i],
             fund_trackindexcode=funds_detail[3][i],
-            fund_fundscale=funds_detail[4][i],
+            fund_fundscale=none2zero(funds_detail[4][i]),
             fund_mgrcomp=funds_detail[5][i],
             fund_fundmanager=funds_detail[6][i]
         )
         db.session.add(fund)
     db.session.commit()
+
+
+def none2zero(x):
+    if x is None:
+        return 0
+    else:
+        return x
 
 
 if __name__ == '__main__':
