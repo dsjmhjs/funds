@@ -9,6 +9,10 @@ from contrs.main.forms import EditProfileForm, EditProfileAdminForm
 from flask_login import login_required, current_user
 from models.roles import Perm
 from contrs.decorators import permission_required, admin_required
+# pyecharts
+from pyecharts import Line
+
+REMOTE_HOST = "https://pyecharts.github.io/assets/js"
 
 
 @main.route('/', methods=['GET', 'POST'])
@@ -19,7 +23,7 @@ def index():
     return render_template('index.html', pagination=pagination, showindexes=showindexes)
 
 
-@main.route('/<fti>')
+@main.route('/<fti>/funds')
 def the_funds(fti):
     fund_filters = {
         Fund.fund_investtype == u'被动指数型基金',
@@ -27,6 +31,36 @@ def the_funds(fti):
     }
     funds = Fund.query.filter(*fund_filters).order_by(Fund.fund_fundscale.desc()).all()
     return render_template('the_funds.html', fti=fti, funds=funds)
+
+
+@main.route('/<fti>/data')
+def the_data(fti):
+    his_filters = {TrackIndex.fund_trackindexcode == fti}
+    histories = TrackIndex.query.filter(*his_filters).order_by(TrackIndex.date).all()
+    dates = []
+    pe_ttms = []
+    for history in histories:
+        dates.append(history.date[2:4] + '/' + history.date[5:7] + '/' + history.date[8:10])
+        pe_ttms.append('%.2f' % history.pe_ttm)
+    # 折线图
+    line = Line(
+        width=1200,
+        height=500
+    )
+    line.add(
+        'PE',
+        dates,
+        pe_ttms,
+        area_opacity=0.1,
+        mark_line=["average"]
+    )
+    return render_template(
+        'the_data.html',
+        fti=fti,
+        myechart=line.render_embed(),
+        host=REMOTE_HOST,
+        script_list=line.get_js_dependencies()
+    )
 
 
 @main.route('/admin')

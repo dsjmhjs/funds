@@ -51,7 +51,9 @@
         <td><a class="btn btn-success btn-sm"
                href="{{ url_for('main.the_funds', fti=showindex.fund_trackindexcode) }}"
                role="button"><em>Funds</em></a></td>
-        <td><a class="btn btn-primary btn-sm" href="#" role="button"><em>Data</em></a></td>
+        <td><a class="btn btn-primary btn-sm"
+               href="{{ url_for('main.the_data', fti=showindex.fund_trackindexcode) }}"
+               role="button"><em>Data</em></a></td>
     </tr>
     {% endfor %}
     </tbody>
