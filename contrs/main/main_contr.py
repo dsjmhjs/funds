@@ -10,10 +10,8 @@ from flask_login import login_required, current_user
 from models.roles import Perm
 from contrs.decorators import permission_required, admin_required
 # pyecharts
-from pyecharts import Line
+from pyecharts import Bar
 from pyecharts import Overlap
-
-REMOTE_HOST = "https://pyecharts.github.io/assets/js"
 
 
 @main.route('/', methods=['GET', 'POST'])
@@ -24,17 +22,34 @@ def index():
     return render_template('index.html', pagination=pagination, showindexes=showindexes)
 
 
+@main.route('/passive-index-funds')
+def passive_index_funds():
+    page = request.args.get('page', 1, type=int)
+    funds_filters = {
+        Fund.fund_investtype == u'被动指数型基金',
+        Fund.fund_trackindexcode != ''
+    }
+    pagination = Fund.query.filter(*funds_filters).order_by(Fund.fund_fundscale.desc()).paginate(page, 20, False)
+    funds = pagination.items
+    return render_template('passive_index_funds.html', pagination=pagination, funds=funds)
+
+
 @main.route('/<fti>/funds')
+@login_required
 def the_funds(fti):
-    fund_filters = {
+    funds_filters = {
         Fund.fund_investtype == u'被动指数型基金',
         Fund.fund_trackindexcode == fti
     }
-    funds = Fund.query.filter(*fund_filters).order_by(Fund.fund_fundscale.desc()).all()
+    funds = Fund.query.filter(*funds_filters).order_by(Fund.fund_fundscale.desc()).all()
     return render_template('the_funds.html', fti=fti, funds=funds)
 
 
+REMOTE_HOST = "https://pyecharts.github.io/assets/js"
+
+
 @main.route('/<fti>/data')
+@login_required
 def the_data(fti):
     his_filters = {TrackIndex.fund_trackindexcode == fti}
     histories = TrackIndex.query.filter(*his_filters).order_by(TrackIndex.date).all()
@@ -46,29 +61,27 @@ def the_data(fti):
         closes.append('%.2f' % history.close)
         pe_ttms.append('%.2f' % history.pe_ttm)
     # 折线图
-    line_close = Line()
-    line_close.add(
+    bar_close = Bar()
+    bar_close.add(
         'POINT',
         dates,
         closes,
-        area_opacity=0.1,
         mark_point=[{"coord": [dates[-1], closes[-1]], "name": dates[-1]}],
         mark_point_textcolor='black',
         is_more_utils=True
     )
-    line_pe = Line()
-    line_pe.add(
+    bar_pe = Bar()
+    bar_pe.add(
         'PE',
         dates,
         pe_ttms,
-        area_opacity=0.1,
         mark_point=[{"coord": [dates[-1], pe_ttms[-1]], "name": dates[-1]}],
         mark_point_textcolor='black',
         is_more_utils=True
     )
     overlap = Overlap(width=1200, height=500)
-    overlap.add(line_pe)
-    overlap.add(line_close, yaxis_index=1, is_add_yaxis=True)
+    overlap.add(bar_pe)
+    overlap.add(bar_close, yaxis_index=1, is_add_yaxis=True)
     return render_template(
         'the_data.html',
         fti=fti,

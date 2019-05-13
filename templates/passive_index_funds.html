@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% import "_macros.html" as macros %}
+
+{% block title %}Funds{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+{% endblock %}
+
+{% block page_content %}
+<div class="col-md-8">
+    <h1><em>Hello, {% if current_user.is_authenticated %}{{ current_user.username }}{% else %}Stranger{% endif %}.</em>
+    </h1>
+</div>
+{#
+<div>
+    {% if current_user.can(Perm.W) %}
+    {{ wtf.quick_form(form) }}
+    {% endif %}
+</div>
+#}
+<table class="table table-hover table-condensed">
+    <thead>
+    <tr class="info">
+        <th>#基金代码</th>
+        <th>基金简称</th>
+        <th>投资类型</th>
+        <th>跟踪指数代码</th>
+        <th>基金规模</th>
+        <th>基金管理人</th>
+        <th>基金经理</th>
+        <th>更新日期</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for fund in funds %}
+    <tr>
+        <td>{{ fund.wind_code }}</td>
+        <td>{{ fund.sec_name }}</td>
+        <td>{{ fund.fund_investtype }}</td>
+        <td class="danger"><a href="{{ url_for('main.index') }}">{{ fund.fund_trackindexcode }}</a></td>
+        <td>{{ fund.fund_fundscale | round(2) }}</td>
+        <td>{{ fund.fund_mgrcomp }}</td>
+        <td>{{ fund.fund_fundmanager }}</td>
+        <td>{{ fund.date }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% if pagination %}
+<div class="pagination">
+    {{ macros.pagination_widget(pagination, '.passive_index_funds') }}
+</div>
+{% endif %}
+{% endblock %}
