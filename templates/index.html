@@ -28,6 +28,8 @@
         <th>收盘价</th>
         <th>市盈率</th>
         <th>分位点</th>
+        <th>危险值</th>
+        <th>机会值</th>
         <th>市净率</th>
         <th>市销率</th>
         <th>更新日期</th>
@@ -43,17 +45,35 @@
         <td>{{ showindex.sec_name }}</td>
         <td>{{ showindex.close | round(2) }}</td>
         <td>{{ showindex.pe_ttm | round(2) }}</td>
-        <td class="danger">{{ showindex.quantile | round(2) }}</td>
+        <td>
+            <a href="{{ url_for('main.the_data', fti=showindex.fund_trackindexcode) }}">
+                <span class="label label-warning">{{ (showindex.quantile | round(4)) * 100 }}%</span>
+            </a>
+        </td>
+        <td>
+            <a href="{{ url_for('main.the_data', fti=showindex.fund_trackindexcode) }}">
+                <span class="label label-danger">{{ showindex.danger | round(2) }}</span>
+            </a>
+        </td>
+        <td>
+            <a href="{{ url_for('main.the_data', fti=showindex.fund_trackindexcode) }}">
+                <span class="label label-success">{{ showindex.chance | round(2) }}</span>
+            </a>
+        </td>
         <td>{{ showindex.pb_lf | round(2) }}</td>
         <td>{{ showindex.ps_ttm | round(2) }}</td>
         <td>{{ showindex.date }}</td>
         <td>{{ showindex.count }}</td>
-        <td><a class="btn btn-success btn-sm"
+        <td><a class="btn btn-primary btn-xs"
                href="{{ url_for('main.the_funds', fti=showindex.fund_trackindexcode) }}"
-               role="button"><em>Funds</em></a></td>
-        <td><a class="btn btn-primary btn-sm"
+               role="button">
+            <span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span></a>
+        </td>
+        <td><a class="btn btn-info btn-xs"
                href="{{ url_for('main.the_data', fti=showindex.fund_trackindexcode) }}"
-               role="button"><em>Data</em></a></td>
+               role="button">
+            <span class="glyphicon glyphicon-stats" aria-hidden="true"></span></a>
+        </td>
     </tr>
     {% endfor %}
     </tbody>

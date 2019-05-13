@@ -84,6 +84,7 @@ def mydb_set_showindexes():
         fund_trackindexcodes.add(entity.fund_trackindexcode)
     fund_trackindexcodes = list(fund_trackindexcodes)
     for fti in fund_trackindexcodes:
+        print fti
         fti_filters = {TrackIndex.fund_trackindexcode == fti}
         entities = TrackIndex.query.filter(*fti_filters).order_by(TrackIndex.date.desc()).first()
         count_filters = {
@@ -91,12 +92,29 @@ def mydb_set_showindexes():
             Fund.fund_trackindexcode == fti
         }
         count = Fund.query.filter(*count_filters).count()
+        # 计算分位点
+        pes = []
+        query_pes = TrackIndex.query.filter(*fti_filters).order_by(TrackIndex.pe_ttm).all()
+        for query_pe in query_pes:
+            if none2zero(query_pe.pe_ttm) != 0:
+                pes.append(none2zero(query_pe.pe_ttm))
+        length = len(pes)
+        if length > 0:
+            quantile = get_quantile(none2zero(entities.pe_ttm), pes)
+            danger = pes[int(length * 0.75 - 1)]
+            chance = pes[int(length * 0.25 - 1)]
+        else:
+            quantile = 0
+            danger = 0
+            chance = 0
         showindex = ShowIndex(
             fund_trackindexcode=entities.fund_trackindexcode,
             sec_name=entities.sec_name,
             close=none2zero(entities.close),
             pe_ttm=none2zero(entities.pe_ttm),
-            quantile=0.75,
+            quantile=quantile,
+            danger=danger,
+            chance=chance,
             pb_lf=none2zero(entities.pb_lf),
             ps_ttm=none2zero(entities.ps_ttm),
             date=entities.date,
@@ -104,6 +122,14 @@ def mydb_set_showindexes():
         )
         db.session.add(showindex)
     db.session.commit()
+
+
+def get_quantile(pe, pes):
+    length = len(pes)
+    for i in range(length):
+        if pe < pes[i]:
+            return float(i - 1) / float(length)
+    return float(1)
 
 
 def none2zero(x):

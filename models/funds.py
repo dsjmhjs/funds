@@ -58,6 +58,10 @@ class ShowIndex(db.Model):
     pe_ttm = db.Column(db.Float)
     # 分位点
     quantile = db.Column(db.Float)
+    # 危险值
+    danger = db.Column(db.Float)
+    # 机会值
+    chance = db.Column(db.Float)
     # 市净率
     pb_lf = db.Column(db.Float)
     # 市销率

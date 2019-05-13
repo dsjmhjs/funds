@@ -39,7 +39,11 @@
         <td>{{ fund.wind_code }}</td>
         <td>{{ fund.sec_name }}</td>
         <td>{{ fund.fund_investtype }}</td>
-        <td class="danger"><a href="{{ url_for('main.index') }}">{{ fund.fund_trackindexcode }}</a></td>
+        <td>
+            <a href="{{ url_for('main.the_data', fti=fund.fund_trackindexcode) }}">
+                <span class="label label-danger">{{ fund.fund_trackindexcode }}</span>
+            </a>
+        </td>
         <td>{{ fund.fund_fundscale | round(2) }}</td>
         <td>{{ fund.fund_mgrcomp }}</td>
         <td>{{ fund.fund_fundmanager }}</td>

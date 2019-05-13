@@ -79,7 +79,7 @@ def the_data(fti):
         mark_point_textcolor='black',
         is_more_utils=True
     )
-    overlap = Overlap(width=1200, height=500)
+    overlap = Overlap(width=1150, height=500)
     overlap.add(bar_pe)
     overlap.add(bar_close, yaxis_index=1, is_add_yaxis=True)
     return render_template(
