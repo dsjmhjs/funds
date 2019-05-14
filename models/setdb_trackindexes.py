@@ -104,9 +104,9 @@ def mydb_set_showindexes():
             danger = pes[int(length * 0.75 - 1)]
             chance = pes[int(length * 0.25 - 1)]
         else:
-            quantile = 0
-            danger = 0
-            chance = 0
+            quantile = 1.0
+            danger = 0.0
+            chance = 0.0
         showindex = ShowIndex(
             fund_trackindexcode=entities.fund_trackindexcode,
             sec_name=entities.sec_name,

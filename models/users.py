@@ -10,8 +10,8 @@ from config import login_manager
 class User(UserMixin, db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(64), unique=True)
-    username = db.Column(db.String(64), unique=True)
+    email = db.Column(db.String(64))
+    username = db.Column(db.String(64))
     # 设置外键
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
     password = db.Column(db.String(64))

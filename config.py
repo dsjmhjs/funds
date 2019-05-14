@@ -52,7 +52,7 @@ class Config:
     # read from environment variable
     MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
-    FLASKY_MAIL_SUBJECT_PREFIX = '<Flaskyyy>'
+    FLASKY_MAIL_SUBJECT_PREFIX = '<Confirm>'
     # FLASKY_MAIL_SENDER = 'km <451221245@qq.com>'
     FLASKY_BLOGS_PER_PAGE = 10
     FLASKY_FOLLOWERS_PER_PAGE = 10
