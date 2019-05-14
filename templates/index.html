@@ -27,13 +27,38 @@
         <th>指数简称</th>
         <th>收盘价</th>
         <th>市盈率</th>
-        <th>分位点</th>
+        <th>
+            <div class="dropdown">
+                分位点<span class="caret" id="quantile" data-toggle="dropdown"></span>
+                <ul class="dropdown-menu" aria-labelledby="quantile">
+                    <li><a href="{{ url_for('main.index_order', order=1) }}">升序</a></li>
+                    <li><a href="{{ url_for('main.index_order', order=-1) }}">降序</a></li>
+                </ul>
+            </div>
+        </th>
         <th>危险值</th>
         <th>机会值</th>
         <th>市净率</th>
         <th>市销率</th>
-        <th>更新日期</th>
-        <th>基金数量</th>
+        <th>
+            <div class="dropdown">
+                起始日<span class="caret" id="start_date" data-toggle="dropdown"></span>
+                <ul class="dropdown-menu" aria-labelledby="start_date">
+                    <li><a href="{{ url_for('main.index_order', order=2) }}">升序</a></li>
+                    <li><a href="{{ url_for('main.index_order', order=-2) }}">降序</a></li>
+                </ul>
+            </div>
+        </th>
+        <th>更新日</th>
+        <th>
+            <div class="dropdown">
+                基金数<span class="caret" id="count" data-toggle="dropdown"></span>
+                <ul class="dropdown-menu" aria-labelledby="count">
+                    <li><a href="{{ url_for('main.index_order', order=3) }}">升序</a></li>
+                    <li><a href="{{ url_for('main.index_order', order=-3) }}">降序</a></li>
+                </ul>
+            </div>
+        </th>
         <th></th>
         <th></th>
     </tr>
@@ -62,6 +87,7 @@
         </td>
         <td>{{ showindex.pb_lf | round(2) }}</td>
         <td>{{ showindex.ps_ttm | round(2) }}</td>
+        <td>{{ showindex.start_date }}</td>
         <td>{{ showindex.date }}</td>
         <td>{{ showindex.count }}</td>
         <td><a class="btn btn-primary btn-xs"

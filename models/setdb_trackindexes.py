@@ -87,6 +87,7 @@ def mydb_set_showindexes():
         print fti
         fti_filters = {TrackIndex.fund_trackindexcode == fti}
         entities = TrackIndex.query.filter(*fti_filters).order_by(TrackIndex.date.desc()).first()
+        start_dates = TrackIndex.query.filter(*fti_filters).order_by(TrackIndex.date).first()
         count_filters = {
             Fund.fund_investtype == u'被动指数型基金',
             Fund.fund_trackindexcode == fti
@@ -117,6 +118,7 @@ def mydb_set_showindexes():
             chance=chance,
             pb_lf=none2zero(entities.pb_lf),
             ps_ttm=none2zero(entities.ps_ttm),
+            start_date=start_dates.date,
             date=entities.date,
             count=count
         )

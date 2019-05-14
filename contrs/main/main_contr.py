@@ -17,9 +17,33 @@ from pyecharts import Overlap
 @main.route('/', methods=['GET', 'POST'])
 def index():
     page = request.args.get('page', 1, type=int)
-    pagination = ShowIndex.query.order_by(ShowIndex.count.desc()).paginate(page, 10, False)
+    query = ShowIndex.query.order_by(ShowIndex.count.desc())
+    pagination = query.paginate(page, 20, False)
     showindexes = pagination.items
     return render_template('index.html', pagination=pagination, showindexes=showindexes)
+
+
+@main.route('/order/<order>', methods=['GET', 'POST'])
+def index_order(order):
+    page = request.args.get('page', 1, type=int)
+    # 分位点、起始日、基金数
+    if order == '1':
+        query = ShowIndex.query.order_by(ShowIndex.quantile)
+    elif order == '-1':
+        query = ShowIndex.query.order_by(ShowIndex.quantile.desc())
+    elif order == '2':
+        query = ShowIndex.query.order_by(ShowIndex.start_date)
+    elif order == '-2':
+        query = ShowIndex.query.order_by(ShowIndex.start_date.desc())
+    elif order == '3':
+        query = ShowIndex.query.order_by(ShowIndex.count)
+    elif order == '-3':
+        query = ShowIndex.query.order_by(ShowIndex.count.desc())
+    else:
+        query = ShowIndex.query.order_by(ShowIndex.count.desc())
+    pagination = query.paginate(page, 20, False)
+    showindexes = pagination.items
+    return render_template('index.html', order=order, pagination=pagination, showindexes=showindexes)
 
 
 @main.route('/passive-index-funds')

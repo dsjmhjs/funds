@@ -54,4 +54,4 @@ def make_users(count=5):
 if __name__ == '__main__':
     with create_app('default').app_context():
         mydb_init()
-        mydb_set_users()
+        # mydb_set_users()
