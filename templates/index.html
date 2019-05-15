@@ -1,6 +1,5 @@
 {% extends "base.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
-{% import "_macros.html" as macros %}
 
 {% block title %}Funds{% endblock %}
 
@@ -31,8 +30,8 @@
             <div class="dropdown">
                 分位点<span class="caret" id="quantile" data-toggle="dropdown"></span>
                 <ul class="dropdown-menu" aria-labelledby="quantile">
-                    <li><a href="{{ url_for('main.index_order', order=1) }}">升序</a></li>
-                    <li><a href="{{ url_for('main.index_order', order=-1) }}">降序</a></li>
+                    <li><a href="{{ url_for('main.index', order=1) }}">升序</a></li>
+                    <li><a href="{{ url_for('main.index', order=-1) }}">降序</a></li>
                 </ul>
             </div>
         </th>
@@ -44,8 +43,8 @@
             <div class="dropdown">
                 起始日<span class="caret" id="start_date" data-toggle="dropdown"></span>
                 <ul class="dropdown-menu" aria-labelledby="start_date">
-                    <li><a href="{{ url_for('main.index_order', order=2) }}">升序</a></li>
-                    <li><a href="{{ url_for('main.index_order', order=-2) }}">降序</a></li>
+                    <li><a href="{{ url_for('main.index', order=2) }}">升序</a></li>
+                    <li><a href="{{ url_for('main.index', order=-2) }}">降序</a></li>
                 </ul>
             </div>
         </th>
@@ -54,8 +53,8 @@
             <div class="dropdown">
                 基金数<span class="caret" id="count" data-toggle="dropdown"></span>
                 <ul class="dropdown-menu" aria-labelledby="count">
-                    <li><a href="{{ url_for('main.index_order', order=3) }}">升序</a></li>
-                    <li><a href="{{ url_for('main.index_order', order=-3) }}">降序</a></li>
+                    <li><a href="{{ url_for('main.index') }}">升序</a></li>
+                    <li><a href="{{ url_for('main.index') }}">降序</a></li>
                 </ul>
             </div>
         </th>
@@ -104,9 +103,4 @@
     {% endfor %}
     </tbody>
 </table>
-{% if pagination %}
-<div class="pagination">
-    {{ macros.pagination_widget(pagination, '.index') }}
-</div>
-{% endif %}
 {% endblock %}
