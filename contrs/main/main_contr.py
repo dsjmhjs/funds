@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from flask import render_template, redirect, url_for, flash, request
+from flask import render_template, redirect, url_for, flash, request, session
 from contrs.main import main
 from config import db
 from models.users import User
@@ -15,24 +15,29 @@ from pyecharts import Overlap
 
 
 @main.route('/', methods=['GET', 'POST'])
-def index(order=0):
-    # 分位点、起始日、基金数
-    if order == 'order1':
-        query = ShowIndex.query.order_by(ShowIndex.quantile)
-    elif order == 'order-1':
-        query = ShowIndex.query.order_by(ShowIndex.quantile.desc())
-    elif order == 'order2':
-        query = ShowIndex.query.order_by(ShowIndex.start_date)
-    elif order == 'order-2':
-        query = ShowIndex.query.order_by(ShowIndex.start_date.desc())
-    elif order == 'order3':
-        query = ShowIndex.query.order_by(ShowIndex.count)
-    elif order == 'order-3':
-        query = ShowIndex.query.order_by(ShowIndex.count.desc())
+def index():
+    if request.method == 'POST':
+        session['order'] = request.values.get('order')
+    if 'order' in session:
+        # 分位点、起始日、基金数
+        if session['order'] == 'fwd':
+            query = ShowIndex.query.order_by(ShowIndex.quantile)
+        elif session['order'] == '-fwd':
+            query = ShowIndex.query.order_by(ShowIndex.quantile.desc())
+        elif session['order'] == 'qsr':
+            query = ShowIndex.query.order_by(ShowIndex.start_date)
+        elif session['order'] == '-qsr':
+            query = ShowIndex.query.order_by(ShowIndex.start_date.desc())
+        elif session['order'] == 'jjs':
+            query = ShowIndex.query.order_by(ShowIndex.count)
+        elif session['order'] == '-jjs':
+            query = ShowIndex.query.order_by(ShowIndex.count.desc())
+        else:
+            query = ShowIndex.query.order_by(ShowIndex.start_date)
     else:
         query = ShowIndex.query.order_by(ShowIndex.start_date)
     showindexes = query.all()
-    return render_template('index.html', order=order, showindexes=showindexes)
+    return render_template('index.html', showindexes=showindexes)
 
 
 @main.route('/passive-index-funds')

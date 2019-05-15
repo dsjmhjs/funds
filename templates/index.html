@@ -8,6 +8,60 @@
 {% endblock %}
 
 {% block page_content %}
+<script src="/static/jquery-3.3.1.min.js"></script>
+<script>
+    $(function(){
+        $("#fwd").click(function(){
+            $.ajax({
+                url: 'http://127.0.0.1:5000/',
+                type: 'POST',
+                async: false,
+                data: {'order': 'fwd'}
+            });
+        });
+        $("#-fwd").click(function(){
+            $.ajax({
+                url: 'http://127.0.0.1:5000/',
+                type: 'POST',
+                async: false,
+                data: {'order': '-fwd'}
+            });
+        });
+        $("#qsr").click(function(){
+            $.ajax({
+                url: 'http://127.0.0.1:5000/',
+                type: 'POST',
+                async: false,
+                data: {'order': 'qsr'}
+            });
+        });
+        $("#-qsr").click(function(){
+            $.ajax({
+                url: 'http://127.0.0.1:5000/',
+                type: 'POST',
+                async: false,
+                data: {'order': '-qsr'}
+            });
+        });
+        $("#jjs").click(function(){
+            $.ajax({
+                url: 'http://127.0.0.1:5000/',
+                type: 'POST',
+                async: false,
+                data: {'order': 'jjs'}
+            });
+        });
+        $("#-jjs").click(function(){
+            $.ajax({
+                url: 'http://127.0.0.1:5000/',
+                type: 'POST',
+                async: false,
+                data: {'order': '-jjs'}
+            });
+        });
+    });
+
+</script>
 <div class="col-md-8">
     <h1><em>Hello, {% if current_user.is_authenticated %}{{ current_user.username }}{% else %}Stranger{% endif %}.</em>
     </h1>
@@ -28,10 +82,11 @@
         <th>市盈率</th>
         <th>
             <div class="dropdown">
-                分位点<span class="caret" id="quantile" data-toggle="dropdown"></span>
-                <ul class="dropdown-menu" aria-labelledby="quantile">
-                    <li><a href="{{ url_for('main.index', order=1) }}">升序</a></li>
-                    <li><a href="{{ url_for('main.index', order=-1) }}">降序</a></li>
+                分位点
+                <span id="dropdownMenu1" class="caret" data-toggle="dropdown"></span>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                    <li><a id="fwd" href="{{ url_for('main.index') }}">升序</a></li>
+                    <li><a id="-fwd" href="{{ url_for('main.index') }}">降序</a></li>
                 </ul>
             </div>
         </th>
@@ -41,20 +96,22 @@
         <th>市销率</th>
         <th>
             <div class="dropdown">
-                起始日<span class="caret" id="start_date" data-toggle="dropdown"></span>
-                <ul class="dropdown-menu" aria-labelledby="start_date">
-                    <li><a href="{{ url_for('main.index', order=2) }}">升序</a></li>
-                    <li><a href="{{ url_for('main.index', order=-2) }}">降序</a></li>
+                起始日
+                <span id="dropdownMenu2" class="caret" data-toggle="dropdown"></span>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                    <li><a id="qsr" href="{{ url_for('main.index') }}">升序</a></li>
+                    <li><a id="-qsr" href="{{ url_for('main.index') }}">降序</a></li>
                 </ul>
             </div>
         </th>
         <th>更新日</th>
         <th>
             <div class="dropdown">
-                基金数<span class="caret" id="count" data-toggle="dropdown"></span>
-                <ul class="dropdown-menu" aria-labelledby="count">
-                    <li><a href="{{ url_for('main.index') }}">升序</a></li>
-                    <li><a href="{{ url_for('main.index') }}">降序</a></li>
+                基金数
+                <span id="dropdownMenu3" class="caret" data-toggle="dropdown"></span>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenu3">
+                    <li><a id="jjs" href="{{ url_for('main.index') }}">升序</a></li>
+                    <li><a id="-jjs" href="{{ url_for('main.index') }}">降序</a></li>
                 </ul>
             </div>
         </th>
