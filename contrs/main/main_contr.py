@@ -16,26 +16,28 @@ from pyecharts import Overlap
 
 @main.route('/', methods=['GET', 'POST'])
 def index():
-    if request.method == 'POST':
-        session['order'] = request.values.get('order')
-    if 'order' in session:
-        # 分位点、起始日、基金数
-        if session['order'] == 'fwd':
-            query = ShowIndex.query.order_by(ShowIndex.quantile)
-        elif session['order'] == '-fwd':
-            query = ShowIndex.query.order_by(ShowIndex.quantile.desc())
-        elif session['order'] == 'qsr':
-            query = ShowIndex.query.order_by(ShowIndex.start_date)
-        elif session['order'] == '-qsr':
-            query = ShowIndex.query.order_by(ShowIndex.start_date.desc())
-        elif session['order'] == 'jjs':
-            query = ShowIndex.query.order_by(ShowIndex.count)
-        elif session['order'] == '-jjs':
-            query = ShowIndex.query.order_by(ShowIndex.count.desc())
-        else:
-            query = ShowIndex.query.order_by(ShowIndex.start_date)
-    else:
+    query = ShowIndex.query.order_by(ShowIndex.start_date)
+    showindexes = query.all()
+    return render_template('index.html', showindexes=showindexes)
+
+
+@main.route('/order/<order>', methods=['GET', 'POST'])
+def index_order(order):
+    # 分位点、起始日、基金数
+    if order == 'fwd':
+        query = ShowIndex.query.order_by(ShowIndex.quantile)
+    elif order == '-fwd':
+        query = ShowIndex.query.order_by(ShowIndex.quantile.desc())
+    elif order == 'qsr':
         query = ShowIndex.query.order_by(ShowIndex.start_date)
+    elif order == '-qsr':
+        query = ShowIndex.query.order_by(ShowIndex.start_date.desc())
+    elif order == 'jjs':
+        query = ShowIndex.query.order_by(ShowIndex.count)
+    elif order == '-jjs':
+        query = ShowIndex.query.order_by(ShowIndex.count.desc())
+    else:
+        query = ShowIndex.query.order_by(ShowIndex.count.desc())
     showindexes = query.all()
     return render_template('index.html', showindexes=showindexes)
 

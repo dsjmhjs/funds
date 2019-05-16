@@ -8,60 +8,9 @@
 {% endblock %}
 
 {% block page_content %}
+{#
 <script src="/static/jquery-3.3.1.min.js"></script>
-<script>
-    $(function(){
-        $("#fwd").click(function(){
-            $.ajax({
-                url: 'http://127.0.0.1:5000/',
-                type: 'POST',
-                async: false,
-                data: {'order': 'fwd'}
-            });
-        });
-        $("#-fwd").click(function(){
-            $.ajax({
-                url: 'http://127.0.0.1:5000/',
-                type: 'POST',
-                async: false,
-                data: {'order': '-fwd'}
-            });
-        });
-        $("#qsr").click(function(){
-            $.ajax({
-                url: 'http://127.0.0.1:5000/',
-                type: 'POST',
-                async: false,
-                data: {'order': 'qsr'}
-            });
-        });
-        $("#-qsr").click(function(){
-            $.ajax({
-                url: 'http://127.0.0.1:5000/',
-                type: 'POST',
-                async: false,
-                data: {'order': '-qsr'}
-            });
-        });
-        $("#jjs").click(function(){
-            $.ajax({
-                url: 'http://127.0.0.1:5000/',
-                type: 'POST',
-                async: false,
-                data: {'order': 'jjs'}
-            });
-        });
-        $("#-jjs").click(function(){
-            $.ajax({
-                url: 'http://127.0.0.1:5000/',
-                type: 'POST',
-                async: false,
-                data: {'order': '-jjs'}
-            });
-        });
-    });
-
-</script>
+#}
 <div class="col-md-8">
     <h1><em>Hello, {% if current_user.is_authenticated %}{{ current_user.username }}{% else %}Stranger{% endif %}.</em>
     </h1>
@@ -73,55 +22,39 @@
     {% endif %}
 </div>
 #}
-<table class="table table-hover table-condensed">
+<table class="table table-hover table-condensed table-bordered">
     <thead>
     <tr class="info">
-        <th>#指数代码</th>
-        <th>指数简称</th>
-        <th>收盘价</th>
-        <th>市盈率</th>
-        <th>
-            <div class="dropdown">
-                分位点
-                <span id="dropdownMenu1" class="caret" data-toggle="dropdown"></span>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                    <li><a id="fwd" href="{{ url_for('main.index') }}">升序</a></li>
-                    <li><a id="-fwd" href="{{ url_for('main.index') }}">降序</a></li>
-                </ul>
-            </div>
+        <th style="text-align:center">#</th>
+        <th style="text-align:center">指数代码</th>
+        <th style="text-align:center">指数简称</th>
+        <th style="text-align:center">收盘价</th>
+        <th style="text-align:center">市盈率</th>
+        <th style="text-align:center">分位点
+            <a id="fwd" href="{{ url_for('main.index_order', order='fwd') }}"><b>↓</b></a>
+            <a id="-fwd" href="{{ url_for('main.index_order', order='-fwd') }}"><b>↑</b></a>
         </th>
-        <th>危险值</th>
-        <th>机会值</th>
-        <th>市净率</th>
-        <th>市销率</th>
-        <th>
-            <div class="dropdown">
-                起始日
-                <span id="dropdownMenu2" class="caret" data-toggle="dropdown"></span>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                    <li><a id="qsr" href="{{ url_for('main.index') }}">升序</a></li>
-                    <li><a id="-qsr" href="{{ url_for('main.index') }}">降序</a></li>
-                </ul>
-            </div>
+        <th style="text-align:center">危险值</th>
+        <th style="text-align:center">机会值</th>
+        <th style="text-align:center">市净率</th>
+        <th style="text-align:center">市销率</th>
+        <th style="text-align:center">起始日
+            <a id="qsr" href="{{ url_for('main.index_order', order='qsr') }}"><b>↓</b></a>
+            <a id="-qsr" href="{{ url_for('main.index_order', order='-qsr') }}"><b>↑</b></a>
         </th>
-        <th>更新日</th>
-        <th>
-            <div class="dropdown">
-                基金数
-                <span id="dropdownMenu3" class="caret" data-toggle="dropdown"></span>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenu3">
-                    <li><a id="jjs" href="{{ url_for('main.index') }}">升序</a></li>
-                    <li><a id="-jjs" href="{{ url_for('main.index') }}">降序</a></li>
-                </ul>
-            </div>
+        <th style="text-align:center">更新日</th>
+        <th style="text-align:center">基金数
+            <a id="jjs" href="{{ url_for('main.index_order', order='jjs') }}"><b>↓</b></a>
+            <a id="-jjs" href="{{ url_for('main.index_order', order='-jjs') }}"><b>↑</b></a>
         </th>
-        <th></th>
-        <th></th>
+        <th style="text-align:center"></th>
+        <th style="text-align:center"></th>
     </tr>
     </thead>
     <tbody>
     {% for showindex in showindexes %}
-    <tr>
+    <tr style="text-align:center">
+        <td><b>{{ loop.index }}</b></td>
         <td>{{ showindex.fund_trackindexcode }}</td>
         <td>{{ showindex.sec_name }}</td>
         <td>{{ showindex.close | round(2) }}</td>
