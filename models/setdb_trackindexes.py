@@ -48,8 +48,6 @@ def mydb_set_trackindexes():
         print count, fti
         count += 1
         detail = w.wsd(fti, "sec_name,close,pe_ttm,pb_lf,ps_ttm", launchdate_dict[fti], today, "Period=W")
-        # detail = w.wsd(fti, "sec_name,close,pe_ttm,pb_lf,ps_ttm", launchdate_dict[fti], "2018-12-31", "Period=W")
-        # detail = w.wsd(fti, "sec_name,close,pe_ttm,pb_lf,ps_ttm", "2019-01-01", today, "")
         # detail = w.wsd(fti, "sec_name,close,pe_ttm,pb_lf,ps_ttm", today, today, "")
         times = detail.Times
         data = detail.Data
@@ -143,4 +141,5 @@ def none2zero(x):
 
 if __name__ == '__main__':
     with create_app('default').app_context():
+        # mydb_set_trackindexes()
         mydb_set_showindexes()

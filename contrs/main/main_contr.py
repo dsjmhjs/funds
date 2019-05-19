@@ -77,10 +77,11 @@ def the_data(fti):
     closes = []
     pe_ttms = []
     for history in histories:
-        dates.append(history.date[2:4] + '/' + history.date[5:7] + '/' + history.date[8:10])
-        closes.append('%.2f' % history.close)
-        pe_ttms.append('%.2f' % history.pe_ttm)
-    # 折线图
+        if history.pe_ttm != 0:
+            dates.append(history.date[2:4] + '/' + history.date[5:7] + '/' + history.date[8:10])
+            closes.append('%.2f' % history.close)
+            pe_ttms.append('%.2f' % history.pe_ttm)
+    # 柱状图
     bar_close = Bar()
     bar_close.add(
         'POINT',
