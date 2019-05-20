@@ -48,3 +48,9 @@ class BlogForm(FlaskForm):
 class CommentForm(FlaskForm):
     body = StringField('Write your comment:', validators=[DataRequired()])
     submit = SubmitField('Submit')
+
+
+# 起始日期
+class StartTimeForm(FlaskForm):
+    start_time = StringField('Start with:', validators=[DataRequired()])
+    submit = SubmitField('Submit')

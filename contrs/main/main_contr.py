@@ -4,10 +4,11 @@ from contrs.main import main
 from config import db
 from models.users import User
 from models.roles import Role
-from models.funds import Fund, TrackIndex, ShowIndex
-from contrs.main.forms import EditProfileForm, EditProfileAdminForm
-from flask_login import login_required, current_user
 from models.roles import Perm
+from models.funds import Fund, TrackIndex, ShowIndex
+from models.setdb_trackindexes import mydb_set_showindexes, get_quantile, none2zero
+from contrs.main.forms import EditProfileForm, EditProfileAdminForm, StartTimeForm
+from flask_login import login_required, current_user
 from contrs.decorators import permission_required, admin_required
 # pyecharts
 from pyecharts import Bar
@@ -16,9 +17,14 @@ from pyecharts import Overlap
 
 @main.route('/', methods=['GET', 'POST'])
 def index():
+    form = StartTimeForm()
     query = ShowIndex.query.order_by(ShowIndex.start_date)
     showindexes = query.all()
-    return render_template('index.html', showindexes=showindexes)
+    if request.method == 'POST':
+        if form.validate_on_submit():
+            start_time = request.form.get('start_time')
+            mydb_set_showindexes(start_time)
+    return render_template('index.html', showindexes=showindexes, form=form)
 
 
 @main.route('/order/<order>', methods=['GET', 'POST'])
