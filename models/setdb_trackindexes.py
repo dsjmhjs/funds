@@ -66,7 +66,7 @@ def mydb_set_trackindexes():
     w.stop()
 
 
-def mydb_set_showindexes(start_time):
+def mydb_set_showindexes():
     showindexes = ShowIndex.query.all()
     for si in showindexes:
         db.session.delete(si)
@@ -87,8 +87,8 @@ def mydb_set_showindexes(start_time):
         entities = TrackIndex.query.filter(*fti_filters).order_by(TrackIndex.date.desc()).first()
         start_dates = TrackIndex.query.filter(*fti_filters).order_by(TrackIndex.date).first()
         # 如果指数起始日晚于输入的起始时间，则略过该指数
-        if start_dates.date > start_time:
-            continue
+        # if start_dates.date > start_time:
+        #     continue
         count_filters = {
             Fund.fund_investtype == u'被动指数型基金',
             Fund.fund_trackindexcode == fti
@@ -98,7 +98,6 @@ def mydb_set_showindexes(start_time):
         pes = []
         fti_start_time_filters = {
             TrackIndex.fund_trackindexcode == fti,
-            TrackIndex.date >= start_time
         }
         query_pes = TrackIndex.query.filter(*fti_start_time_filters).order_by(TrackIndex.pe_ttm).all()
         for query_pe in query_pes:

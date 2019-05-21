@@ -50,7 +50,13 @@ class CommentForm(FlaskForm):
     submit = SubmitField('Submit')
 
 
-# 起始日期
+# 主页起始日期
 class StartTimeForm(FlaskForm):
+    start_time = StringField('Start with:', validators=[DataRequired()])
+    submit = SubmitField('Submit')
+
+
+# 数据页起始日期
+class StartTimeFormOfData(FlaskForm):
     start_time = StringField('Start with:', validators=[DataRequired()])
     submit = SubmitField('Submit')

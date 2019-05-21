@@ -15,9 +15,10 @@
     <h1><em>Hello, {% if current_user.is_authenticated %}{{ current_user.username }}{% else %}Stranger{% endif %}.</em>
     </h1>
 </div>
-<form action="{{ url_for('main.index') }}" method='post'>
+<form method='post'>
     {{ form.csrf_token }}
-    {{ form.start_time(placeholder='Start with...') }}{{ form.submit() }}
+    {{ form.start_time(placeholder='Start with...') }}
+    {{ form.submit() }}
 </form>
 {#
 <div>

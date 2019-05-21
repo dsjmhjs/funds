@@ -23,7 +23,7 @@ def index():
     if request.method == 'POST':
         if form.validate_on_submit():
             start_time = request.form.get('start_time')
-            mydb_set_showindexes(start_time)
+            print start_time
     return render_template('index.html', showindexes=showindexes, form=form)
 
 
