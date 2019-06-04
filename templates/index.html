@@ -15,11 +15,13 @@
     <h1><em>Hello, {% if current_user.is_authenticated %}{{ current_user.username }}{% else %}Stranger{% endif %}.</em>
     </h1>
 </div>
+{#
 <form method='post'>
     {{ form.csrf_token }}
     {{ form.start_time(placeholder='Start with...') }}
     {{ form.submit() }}
 </form>
+#}
 {#
 <div>
     {% if current_user.can(Perm.W) %}
