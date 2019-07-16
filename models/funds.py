@@ -72,3 +72,9 @@ class ShowIndex(db.Model):
     start_date = db.Column(db.String(64))
     # 基金数
     count = db.Column(db.Integer)
+    # 周期（2006-07-01 or 2014-12-01）
+    cycle = db.Column(db.Integer)
+    # 2006分位点
+    quantile_2006 = db.Column(db.Float)
+    # 2014分位点
+    quantile_2014 = db.Column(db.Float)

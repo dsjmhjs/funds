@@ -112,6 +112,16 @@ def mydb_set_showindexes():
             quantile = 1.0
             danger = 0.0
             chance = 0.0
+        # 标记周期
+        if start_dates.date <= '2006-07-01':
+            cycle = 2006
+        elif '2006-07-01' <= start_dates.date <= '2014-12-01':
+            cycle = 2006
+        else:
+            cycle = 2025
+        # 计算分周期分位点
+        quantile_2006 = 1.0
+        quantile_2014 = 1.0
         showindex = ShowIndex(
             fund_trackindexcode=entities.fund_trackindexcode,
             sec_name=entities.sec_name,
@@ -124,7 +134,10 @@ def mydb_set_showindexes():
             ps_ttm=none2zero(entities.ps_ttm),
             start_date=start_dates.date,
             date=entities.date,
-            count=count
+            count=count,
+            cycle=cycle,
+            quantile_2006=quantile_2006,
+            quantile_2014=quantile_2014
         )
         db.session.add(showindex)
     db.session.commit()
