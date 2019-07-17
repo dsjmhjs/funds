@@ -143,6 +143,19 @@ def mydb_set_showindexes():
     db.session.commit()
 
 
+def cal_quantile(qpes, pt):
+    pes = []
+    for qpe in qpes:
+        if none2zero(qpe.pe_ttm) != 0:
+            pes.append(none2zero(qpe.pe_ttm))
+    length = len(pes)
+    if length > 0:
+        quantile = get_quantile(none2zero(pt), pes)
+    else:
+        quantile = 1.0
+    return quantile
+
+
 def get_quantile(pe, pes):
     length = len(pes)
     for i in range(length):
