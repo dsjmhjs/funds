@@ -96,9 +96,7 @@ def mydb_set_showindexes():
         count = Fund.query.filter(*count_filters).count()
         # 计算分位点
         pes = []
-        fti_start_time_filters = {
-            TrackIndex.fund_trackindexcode == fti,
-        }
+        fti_start_time_filters = {TrackIndex.fund_trackindexcode == fti}
         query_pes = TrackIndex.query.filter(*fti_start_time_filters).order_by(TrackIndex.pe_ttm).all()
         for query_pe in query_pes:
             if none2zero(query_pe.pe_ttm) != 0:
@@ -116,12 +114,31 @@ def mydb_set_showindexes():
         if start_dates.date <= '2006-07-01':
             cycle = 2006
         elif '2006-07-01' <= start_dates.date <= '2014-12-01':
-            cycle = 2006
+            cycle = 2014
         else:
             cycle = 2025
         # 计算分周期分位点
-        quantile_2006 = 1.0
-        quantile_2014 = 1.0
+        # 2006
+        if cycle == 2006:
+            fti_start_time_filters_2006 = {
+                TrackIndex.fund_trackindexcode == fti,
+                TrackIndex.date >= '2006-07-01'
+            }
+            query_pes_2006 = TrackIndex.query.filter(*fti_start_time_filters_2006).order_by(TrackIndex.pe_ttm).all()
+            quantile_2006 = cal_quantile(query_pes_2006, entities.pe_ttm)
+            quantile_2014 = 1.0
+        # 2014
+        elif cycle == 2014:
+            fti_start_time_filters_2014 = {
+                TrackIndex.fund_trackindexcode == fti,
+                TrackIndex.date >= '2014-12-01'
+            }
+            query_pes_2014 = TrackIndex.query.filter(*fti_start_time_filters_2014).order_by(TrackIndex.pe_ttm).all()
+            quantile_2014 = cal_quantile(query_pes_2014, entities.pe_ttm)
+            quantile_2006 = 1.0
+        else:
+            quantile_2006 = 1.0
+            quantile_2014 = 1.0
         showindex = ShowIndex(
             fund_trackindexcode=entities.fund_trackindexcode,
             sec_name=entities.sec_name,

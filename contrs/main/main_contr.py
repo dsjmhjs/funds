@@ -20,10 +20,10 @@ def index():
     form = StartTimeForm()
     query = ShowIndex.query.order_by(ShowIndex.start_date)
     showindexes = query.all()
-    if request.method == 'POST':
-        if form.validate_on_submit():
-            start_time = request.form.get('start_time')
-            print start_time
+    # if request.method == 'POST':
+    #     if form.validate_on_submit():
+    #         start_time = request.form.get('start_time')
+    #         print start_time
     return render_template('index.html', showindexes=showindexes, form=form)
 
 
@@ -87,6 +87,10 @@ def the_data(fti):
             dates.append(history.date[2:4] + '/' + history.date[5:7] + '/' + history.date[8:10])
             closes.append('%.2f' % history.close)
             pe_ttms.append('%.2f' % history.pe_ttm)
+        else:
+            dates.append(0)
+            closes.append(0)
+            pe_ttms.append(0)
     # 柱状图
     bar_close = Bar()
     bar_close.add(
