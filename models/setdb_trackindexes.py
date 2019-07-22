@@ -126,7 +126,11 @@ def mydb_set_showindexes():
             }
             query_pes_2006 = TrackIndex.query.filter(*fti_start_time_filters_2006).order_by(TrackIndex.pe_ttm).all()
             quantile_2006 = cal_quantile(query_pes_2006, entities.pe_ttm)
+            danger_2006 = 0.0
+            chance_2006 = 0.0
             quantile_2014 = 1.0
+            danger_2014 = 0.0
+            chance_2014 = 0.0
         # 2014
         elif cycle == 2014:
             fti_start_time_filters_2014 = {
@@ -135,10 +139,18 @@ def mydb_set_showindexes():
             }
             query_pes_2014 = TrackIndex.query.filter(*fti_start_time_filters_2014).order_by(TrackIndex.pe_ttm).all()
             quantile_2014 = cal_quantile(query_pes_2014, entities.pe_ttm)
+            danger_2014 = 0.0
+            chance_2014 = 0.0
             quantile_2006 = 1.0
+            danger_2006 = 0.0
+            chance_2006 = 0.0
         else:
             quantile_2006 = 1.0
+            danger_2006 = 0.0
+            chance_2006 = 0.0
             quantile_2014 = 1.0
+            danger_2014 = 0.0
+            chance_2014 = 0.0
         showindex = ShowIndex(
             fund_trackindexcode=entities.fund_trackindexcode,
             sec_name=entities.sec_name,
@@ -154,7 +166,11 @@ def mydb_set_showindexes():
             count=count,
             cycle=cycle,
             quantile_2006=quantile_2006,
-            quantile_2014=quantile_2014
+            danger_2006=danger_2006,
+            chance_2006=chance_2006,
+            quantile_2014=quantile_2014,
+            danger_2014=danger_2014,
+            chance_2014=chance_2014
         )
         db.session.add(showindex)
     db.session.commit()

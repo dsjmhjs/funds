@@ -29,6 +29,14 @@
     {% endif %}
 </div>
 #}
+<div class="fund-tabs">
+    <ul class="nav nav-tabs">
+        <li{% if cycle == 'all' %} class="active"{% endif %}><a href="{{ url_for('.index_all') }}"><em>All</em></a></li>
+        <li{% if cycle == '2006' %} class="active"{% endif %}><a href="{{ url_for('.index_2006') }}"><em>2006</em></a></li>
+        <li{% if cycle == '2014' %} class="active"{% endif %}><a href="{{ url_for('.index_2014') }}"><em>2014</em></a></li>
+    </ul>
+</div>
+<br>
 <table class="table table-hover table-condensed table-bordered">
     <thead>
     <tr class="info">
@@ -54,8 +62,11 @@
             <a id="jjs" href="{{ url_for('main.index_order', order='jjs') }}"><b>↓</b></a>
             <a id="-jjs" href="{{ url_for('main.index_order', order='-jjs') }}"><b>↑</b></a>
         </th>
+        <th style="text-align:center">所属周期</th>
+        {#
         <th style="text-align:center"></th>
         <th style="text-align:center"></th>
+        #}
     </tr>
     </thead>
     <tbody>
@@ -85,7 +96,13 @@
         <td>{{ showindex.ps_ttm | round(2) }}</td>
         <td>{{ showindex.start_date }}</td>
         <td>{{ showindex.date }}</td>
-        <td>{{ showindex.count }}</td>
+        <td>
+            <a href="{{ url_for('main.the_funds', fti=showindex.fund_trackindexcode) }}">
+                <span class="label label-primary">{{ showindex.count }}</span>
+            </a>
+        </td>
+        <td>{{ showindex.cycle }}</td>
+        {#
         <td><a class="btn btn-primary btn-xs"
                href="{{ url_for('main.the_funds', fti=showindex.fund_trackindexcode) }}"
                role="button">
@@ -96,6 +113,7 @@
                role="button">
             <span class="glyphicon glyphicon-stats" aria-hidden="true"></span></a>
         </td>
+        #}
     </tr>
     {% endfor %}
     </tbody>

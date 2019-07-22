@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from flask import render_template, redirect, url_for, flash, request, session
+from flask import render_template, redirect, url_for, flash, request, session, make_response
 from contrs.main import main
 from config import db
 from models.users import User
@@ -18,13 +18,21 @@ from pyecharts import Overlap
 @main.route('/', methods=['GET', 'POST'])
 def index():
     form = StartTimeForm()
-    query = ShowIndex.query.order_by(ShowIndex.start_date)
+    cycle = request.cookies.get('cycle', 'all')
+    if cycle == 'all':
+        query = ShowIndex.query.order_by(ShowIndex.start_date)
+    elif cycle == '2006':
+        query = ShowIndex.query.filter(ShowIndex.cycle == 2006).order_by(ShowIndex.start_date)
+    elif cycle == '2014':
+        query = ShowIndex.query.filter(ShowIndex.cycle == 2014).order_by(ShowIndex.start_date)
+    else:
+        query = ShowIndex.query.order_by(ShowIndex.start_date)
     showindexes = query.all()
     # if request.method == 'POST':
     #     if form.validate_on_submit():
     #         start_time = request.form.get('start_time')
     #         print start_time
-    return render_template('index.html', showindexes=showindexes, form=form)
+    return render_template('index.html', showindexes=showindexes, form=form, cycle=cycle)
 
 
 @main.route('/order/<order>', methods=['GET', 'POST'])
@@ -46,6 +54,27 @@ def index_order(order):
         query = ShowIndex.query.order_by(ShowIndex.count.desc())
     showindexes = query.all()
     return render_template('index.html', showindexes=showindexes)
+
+
+@main.route('/all')
+def index_all():
+    resp = make_response(redirect(url_for('.index')))
+    resp.set_cookie('cycle', 'all', max_age=30 * 24 * 60 * 60)
+    return resp
+
+
+@main.route('/2006')
+def index_2006():
+    resp = make_response(redirect(url_for('.index')))
+    resp.set_cookie('cycle', '2006', max_age=30 * 24 * 60 * 60)
+    return resp
+
+
+@main.route('/2014')
+def index_2014():
+    resp = make_response(redirect(url_for('.index')))
+    resp.set_cookie('cycle', '2014', max_age=30 * 24 * 60 * 60)
+    return resp
 
 
 @main.route('/passive-index-funds')

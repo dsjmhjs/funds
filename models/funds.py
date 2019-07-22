@@ -76,5 +76,9 @@ class ShowIndex(db.Model):
     cycle = db.Column(db.Integer)
     # 2006分位点
     quantile_2006 = db.Column(db.Float)
+    danger_2006 = db.Column(db.Float)
+    chance_2006 = db.Column(db.Float)
     # 2014分位点
     quantile_2014 = db.Column(db.Float)
+    danger_2014 = db.Column(db.Float)
+    chance_2014 = db.Column(db.Float)
